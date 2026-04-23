@@ -7,14 +7,20 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
+  Alert,
 } from "react-native";
 import { useLayoutEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { saveTransaction } from "@/utils/storage";
+
+type TabProps = {
+  label: string;
+  value: string;
+};
 
 export default function AddTransaction() {
   const [activeTab, setActiveTab] = useState("manual");
@@ -24,13 +30,26 @@ export default function AddTransaction() {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
 
-  type TabProps = {
-    label: string;
-    value: string;
-  };
+  const handleSave = async () => {
+    // Validation
+    if (!name.trim()) {
+      return Alert.alert("Error", "Name is required");
+    }
 
-  const handleSave = () => {
+    if (!date.trim()) {
+      return Alert.alert("Error", "Date is required");
+    }
+
+    // if (!category.trim()) {
+    //   return Alert.alert("Error", "Category is required");
+    // }
+
+    if (!amount || isNaN(Number(amount))) {
+      return Alert.alert("Error", "Enter a valid amount");
+    }
+
     const data = {
+      id: Date.now(), // simple id
       name,
       date,
       category,
@@ -39,13 +58,20 @@ export default function AddTransaction() {
       type: "expense",
     };
 
-    console.log(data);
+    try {
+      await saveTransaction(data);
+      Alert.alert("Success", "Transaction saved!");
+
+      // reset form
+      setName("");
+      setDate("");
+      setCategory("");
+      setAmount("");
+      setNote("");
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong");
+    }
   };
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: "Add Expense",
-  //   });
-  // }, [navigation]);
 
   const Tab = ({ label, value }: TabProps) => (
     <TouchableOpacity
@@ -66,98 +92,98 @@ export default function AddTransaction() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-        <ScrollView style={styles.container}>
-          {/* Tabs */}
-          <View style={styles.tabContainer}>
-            <Tab label="Manual" value="manual" />
-            <Tab label="Capture" value="capture" />
-            <Tab label="Upload Data" value="upload" />
-          </View>
+      <ScrollView style={styles.container}>
+        {/* Tabs */}
+        <View style={styles.tabContainer}>
+          <Tab label="Manual" value="manual" />
+          <Tab label="Capture" value="capture" />
+          <Tab label="Upload Data" value="upload" />
+        </View>
 
-          {activeTab === "manual" && (
-            <>
-              {/* Form Card */}
-              <View style={styles.card}>
-                <Text style={styles.label}>ADD TRANSACTION</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="person-outline" size={20} color="#1A3A8F" />
+        {activeTab === "manual" && (
+          <>
+            {/* Form Card */}
+            <View style={styles.card}>
+              <Text style={styles.label}>ADD TRANSACTION</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons name="person-outline" size={20} color="#1A3A8F" />
 
-                  <TextInput
-                    placeholder="John Doe"
-                    value={name}
-                    onChangeText={setName}
-                    style={styles.input}
-                  />
-                </View>
-
-                <Text style={styles.label}>ADD TRANSACTION</Text>
-                <View style={styles.inputContainer}>
-                  <Feather name="calendar" size={20} color="#1A3A8F" />
-
-                  <TextInput
-                    placeholder="11/24/2023"
-                    value={date}
-                    onChangeText={setDate}
-                    style={styles.input}
-                  />
-                </View>
-                <Text style={styles.label}>ADD ALLOCATION</Text>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    placeholder="Category"
-                    value={category}
-                    editable={false}
-                    style={styles.input}
-                  />
-
-                  <TouchableOpacity>
-                    <Ionicons name="chevron-down" size={20} color="#888" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {/* Amount */}
-              <View style={styles.amountContainer}>
-                <Text style={styles.label}>AMOUNT</Text>
-                <View style={{ position: "relative" }}>
-                  <Text style={styles.dollar}>$</Text>
-
-                  <TextInput
-                    placeholder="0.00"
-                    value={amount}
-                    onChangeText={setAmount}
-                    style={styles.amountInput}
-                    keyboardType="numeric"
-                  />
-                </View>
-
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>USD</Text>
-                </View>
-              </View>
-
-              {/* Notes */}
-              <View style={styles.card}>
-                <Text style={[styles.label, { paddingLeft: 8 }]}>NOTES</Text>
                 <TextInput
-                  placeholder="What was this for?"
-                  value={note}
-                  onChangeText={setNote}
-                  style={[styles.input, { height: 100 }]}
-                  multiline
+                  placeholder="John Doe"
+                  value={name}
+                  onChangeText={setName}
+                  style={styles.input}
                 />
               </View>
 
-              {/* Save Button */}
-              <TouchableOpacity style={styles.button} onPress={handleSave}>
-                <Text style={styles.buttonText}>Save Up!</Text>
-              </TouchableOpacity>
-            </>
-          )}
+              <Text style={styles.label}>ADD TRANSACTION</Text>
+              <View style={styles.inputContainer}>
+                <Feather name="calendar" size={20} color="#1A3A8F" />
 
-          {activeTab === "capture" && <CaptureBox />}
-          {activeTab === "upload" && <CaptureBox />}
-        </ScrollView>
+                <TextInput
+                  placeholder="11/24/2023"
+                  value={date}
+                  onChangeText={setDate}
+                  style={styles.input}
+                />
+              </View>
+              <Text style={styles.label}>ADD ALLOCATION</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="Category"
+                  value={category}
+                  editable={false}
+                  style={styles.input}
+                />
+
+                <TouchableOpacity>
+                  <Ionicons name="chevron-down" size={20} color="#888" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Amount */}
+            <View style={styles.amountContainer}>
+              <Text style={styles.label}>AMOUNT</Text>
+              <View style={{ position: "relative" }}>
+                <Text style={styles.dollar}>$</Text>
+
+                <TextInput
+                  placeholder="0.00"
+                  value={amount}
+                  onChangeText={setAmount}
+                  style={styles.amountInput}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>USD</Text>
+              </View>
+            </View>
+
+            {/* Notes */}
+            <View style={styles.card}>
+              <Text style={[styles.label, { paddingLeft: 8 }]}>NOTES</Text>
+              <TextInput
+                placeholder="What was this for?"
+                value={note}
+                onChangeText={setNote}
+                style={[styles.input, { height: 100 }]}
+                multiline
+              />
+            </View>
+
+            {/* Save Button */}
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save Up!</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {activeTab === "capture" && <CaptureBox />}
+        {activeTab === "upload" && <CaptureBox />}
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
