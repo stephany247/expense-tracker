@@ -1,10 +1,13 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { HapticTab } from "@/components/haptic-tab";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors, Radii } from "@/constants/theme";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
+import { useColorScheme } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -12,22 +15,56 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors.blue,
+        tabBarStyle: {
+          backgroundColor: "#F4F6FF", // blueGhost
+          borderTopWidth: 0,
+          paddingTop: 8,
+        },
         headerShown: false,
         tabBarButton: HapticTab,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Overview",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="view-grid" size={28} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="budgets"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Budgets",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="wallet-outline"
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="insights"
+        options={{
+          title: "Insights",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="auto-graph" size={24} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <SimpleLineIcons name="settings" size={24} color={color} />
+          ),
         }}
       />
     </Tabs>
