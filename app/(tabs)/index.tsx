@@ -12,7 +12,7 @@ export default function HomeScreen() {
 
       <Pressable
         style={styles.fab}
-        onPress={() => router.push("/add-transaction")}
+        onPress={() => router.navigate("/add-transaction")}
       >
         <Ionicons name="add" size={24} color="#fff" />
       </Pressable>

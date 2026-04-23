@@ -1,4 +1,4 @@
-
+import { Colors } from "@/constants/theme";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -15,8 +15,14 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
-          name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
+          name="add-transaction"
+          options={{
+            title: "Add Transaction",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
         />
       </Stack>
     </>
