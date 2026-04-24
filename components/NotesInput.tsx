@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
-import { Colors, Radii } from "@/constants/theme";
+import { Colors, Radii, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -24,11 +24,16 @@ export const NotesInput = ({ value, onChange }: Props) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface,
-    padding: 15,
+    paddingVertical: 20,
     borderRadius: Radii["2xl"],
     marginBottom: 20,
   },
-  label: { fontSize: 12, marginBottom: 5 },
+  label: {
+    fontSize: 12,
+    fontWeight: Typography.semibold,
+    color: Colors.textSecondary,
+    marginBottom: 5,
+  },
   input: {
     backgroundColor: Colors.inputBg,
     borderRadius: 8,

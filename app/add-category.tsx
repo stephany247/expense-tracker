@@ -1,3 +1,4 @@
+import { NotesInput } from "@/components/NotesInput";
 import { Colors, Typography } from "@/constants/theme";
 import { saveCategory } from "@/utils/category-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -61,16 +62,7 @@ function AddCategory() {
             />
           </View>
 
-          <View style={styles.notesBox}>
-            <Text style={styles.label}>NOTES</Text>
-            <TextInput
-              placeholder="What was this for?"
-              value={note}
-              onChangeText={setNote}
-              multiline
-              style={styles.notesInput}
-            />
-          </View>
+          <NotesInput value={note} onChange={setNote} />
         </View>
         <View style={styles.card}>
           <View style={styles.currencyBadge}>
@@ -125,7 +117,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F1F5FB",
+    backgroundColor: Colors.inputBg,
     borderRadius: 12,
     paddingHorizontal: 10,
   },
@@ -137,9 +129,6 @@ const styles = StyleSheet.create({
 
   notesBox: {
     marginTop: 16,
-    backgroundColor: "#F1F5FB",
-    borderRadius: 12,
-    padding: 12,
   },
 
   notesInput: {

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Colors } from "@/constants/theme";
+import { Colors, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -25,9 +25,7 @@ export const DateInput = ({ value, onChange }: Props) => {
 
       <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
         <Feather name="calendar" size={20} color="#1A3A8F" />
-        <Text style={{ padding: 12, flex: 1 }}>
-          {value || "Select date"}
-        </Text>
+        <Text style={{ padding: 12, flex: 1 }}>{value || "Select date"}</Text>
       </TouchableOpacity>
 
       {show && (
@@ -52,6 +50,9 @@ export const DateInput = ({ value, onChange }: Props) => {
 const styles = StyleSheet.create({
   label: {
     fontSize: 12,
+    fontWeight: Typography.semibold,
+    color: Colors.textSecondary,
+    marginBottom: 5,
     marginTop: 18,
   },
   input: {

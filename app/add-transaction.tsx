@@ -21,6 +21,8 @@ import { getCategories } from "@/utils/category-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AmountInput } from "@/components/AmountInput";
 import { DateInput } from "@/components/DateInput";
+import { NameInput } from "@/components/NameInput";
+import { NotesInput } from "@/components/NotesInput";
 
 type TabProps = {
   label: string;
@@ -132,19 +134,10 @@ export default function AddTransaction() {
           <>
             {/* Form Card */}
             <View style={styles.card}>
-              <Text style={styles.label}>ADD TRANSACTION NAME</Text>
-              <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={20} color="#1A3A8F" />
-
-                <TextInput
-                  placeholder="John Doe"
-                  value={name}
-                  onChangeText={setName}
-                  style={styles.input}
-                />
-              </View>
+              <NameInput value={name} onChange={setName} />
 
               <DateInput value={date} onChange={setDate} />
+
               <Text style={styles.label}>ADD ALLOCATION</Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -190,15 +183,8 @@ export default function AddTransaction() {
             />
 
             {/* Notes */}
-            <View style={styles.card}>
-              <Text style={[styles.label, { paddingLeft: 8 }]}>NOTES</Text>
-              <TextInput
-                placeholder="What was this for?"
-                value={note}
-                onChangeText={setNote}
-                style={[styles.input, { height: 100 }]}
-                multiline
-              />
+            <View style={styles.noteCard}>
+              <NotesInput value={note} onChange={setNote} />
             </View>
 
             {/* Save Button */}
@@ -272,7 +258,13 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#fff",
-    padding: 15,
+    padding: 20,
+    borderRadius: Radii["2xl"],
+    marginBottom: 20,
+  },
+  noteCard: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
     borderRadius: Radii["2xl"],
     marginBottom: 20,
   },
