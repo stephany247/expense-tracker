@@ -16,7 +16,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveTransaction } from "@/utils/storage";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { getCategories } from "@/utils/category-storage";
 
 type TabProps = {
   label: string;
@@ -24,14 +25,24 @@ type TabProps = {
 };
 
 export default function AddTransaction() {
+  const { categoryId, categoryName } = useLocalSearchParams();
+
   const [activeTab, setActiveTab] = useState("manual");
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState((categoryName as string) || "");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const { categoryId, categoryName } = useLocalSearchParams();
+  useFocusEffect(() => {
+    const load = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    load();
+  });
 
   const handleSave = async () => {
     // Validation
@@ -43,16 +54,16 @@ export default function AddTransaction() {
       return Alert.alert("Error", "Date is required");
     }
 
-    // if (!category.trim()) {
-    //   return Alert.alert("Error", "Category is required");
-    // }
+    if (!category.trim()) {
+      return Alert.alert("Error", "Category is required");
+    }
 
     if (!amount || isNaN(Number(amount))) {
       return Alert.alert("Error", "Enter a valid amount");
     }
 
     const data = {
-      id: Date.now(), // simple id
+      id: Date.now(),
       name,
       date,
       category,
@@ -74,6 +85,12 @@ export default function AddTransaction() {
     } catch (error) {
       Alert.alert("Error", "Something went wrong");
     }
+  };
+
+  const formatAmount = (value: string) => {
+    const num = Number(value);
+    if (isNaN(num)) return "";
+    return num.toFixed(2);
   };
 
   const Tab = ({ label, value }: TabProps) => (
@@ -107,7 +124,7 @@ export default function AddTransaction() {
           <>
             {/* Form Card */}
             <View style={styles.card}>
-              <Text style={styles.label}>ADD TRANSACTION</Text>
+              <Text style={styles.label}>ADD TRANSACTION NAME</Text>
               <View style={styles.inputContainer}>
                 <Ionicons name="person-outline" size={20} color="#1A3A8F" />
 
@@ -119,7 +136,7 @@ export default function AddTransaction() {
                 />
               </View>
 
-              <Text style={styles.label}>ADD TRANSACTION</Text>
+              <Text style={styles.label}>ADD TRANSACTION DATE</Text>
               <View style={styles.inputContainer}>
                 <Feather name="calendar" size={20} color="#1A3A8F" />
 
@@ -139,10 +156,32 @@ export default function AddTransaction() {
                   style={styles.input}
                 />
 
-                <TouchableOpacity>
-                  <Ionicons name="chevron-down" size={20} color="#888" />
+                <TouchableOpacity
+                  onPress={() => setShowDropdown(!showDropdown)}
+                >
+                  <Ionicons
+                    name="chevron-down"
+                    size={20}
+                    color={Colors.gray600}
+                  />
                 </TouchableOpacity>
               </View>
+              {showDropdown && (
+                <View style={styles.dropdown}>
+                  {categories.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setCategory(item.name);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      <Text>{item.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             {/* Amount */}
@@ -155,6 +194,7 @@ export default function AddTransaction() {
                   placeholder="0.00"
                   value={amount}
                   onChangeText={setAmount}
+                  onBlur={() => setAmount(formatAmount(amount))}
                   style={styles.amountInput}
                   keyboardType="numeric"
                 />
@@ -260,6 +300,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 18,
   },
+
   inputContainer: {
     backgroundColor: Colors.inputBg,
     flexDirection: "row",
@@ -267,10 +308,26 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
   },
+
   input: {
     flex: 1,
     padding: 12,
-    borderRadius: 8,
+    borderRadius: Radii.sm,
+  },
+
+  dropdown: {
+    borderRadius: 10,
+    paddingVertical: 5,
+    elevation: 3,
+  },
+
+  dropdownItem: {
+    padding: 12,
+    borderBottomWidth: 0.5,
+    borderColor: "#eee",
+    borderRadius: Radii.sm,
+    backgroundColor: Colors.blueGhost,
+    marginTop: 8,
   },
 
   amountContainer: {
