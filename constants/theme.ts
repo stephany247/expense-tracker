@@ -13,7 +13,7 @@ export const Colors = {
   success: "#0F6E3A",
   successLight: "#E6F7EE",
   successBright: "#12B76A",
-  danger: "#E03131",
+  danger: "#BA1A1A",
   dangerLight: "#FFF0F0",
   warning: "#B45309",
   warningLight: "#FFF8EC",
@@ -41,6 +41,7 @@ export const Colors = {
   textSecondary: "#737784",
   textTertiary: "#C3C6D5",
   textWhite: "#FFFFFF",
+  textBlack: "#191C1E",
 
   // Chart colors
   chartNavy: "#0D2160",

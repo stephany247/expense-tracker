@@ -7,6 +7,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { useColorScheme } from "react-native";
+import Header from "@/components/Header";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -20,7 +21,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
           paddingTop: 8,
         },
-        headerShown: false,
+        headerTitle: () => <Header />,
       }}
     >
       <Tabs.Screen

@@ -1,42 +1,54 @@
-import { Text, StyleSheet, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Radii } from "@/constants/theme";
-import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, StyleSheet, Pressable, View, ScrollView } from "react-native";
+import { Colors } from "@/constants/theme";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { getTransactions } from "@/utils/storage";
+import PortfolioCard from "@/components/PortfolioCard";
+import Allocations from "@/components/Allocations";
+import RecentLedger from "@/components/RecentLedger";
+import Fab from "@/components/Fab";
+
+type Transaction = {
+  id: number;
+  name: string;
+  date: string;
+  category: string;
+  amount: number;
+  note: string;
+  type: "expense" | "income";
+};
 
 export default function HomeScreen() {
   const router = useRouter();
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <Text>Overview</Text>
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-      <Pressable
-        style={styles.fab}
-        onPress={() => router.navigate("/add-transaction")}
-      >
-        <Ionicons name="add" size={24} color="#fff" />
-      </Pressable>
-    </SafeAreaView>
+  useFocusEffect(
+    useCallback(() => {
+      const load = async () => {
+        const data = await getTransactions();
+        setTransactions(data);
+      };
+      load();
+    }, []),
+  );
+
+  return (
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <PortfolioCard />
+        <Allocations />
+        <RecentLedger transactions={transactions} />
+      </ScrollView>
+
+      <Fab />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  fab: {
-    position: "absolute",
-    bottom: 10,
-    right: 20,
-
-    backgroundColor: "#0047AB",
-    width: 50,
-    height: 50,
-    borderRadius: Radii.lg,
-
-    justifyContent: "center",
-    alignItems: "center",
-
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+  container: {
+    flex: 1,
+    backgroundColor: Colors.blueBg,
+    padding: 16,
   },
 });
