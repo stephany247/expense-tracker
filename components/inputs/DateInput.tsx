@@ -14,14 +14,19 @@ import { Colors, Typography } from "@/constants/theme";
 type Props = {
   value: string;
   onChange: (date: string) => void;
+  label?: string;
 };
 
-export const DateInput = ({ value, onChange }: Props) => {
+export const DateInput = ({
+  value,
+  onChange,
+  label = "ADD TRANSACTION DATE",
+}: Props) => {
   const [show, setShow] = useState(false);
 
   return (
     <>
-      <Text style={styles.label}>ADD TRANSACTION DATE</Text>
+      <Text style={styles.label}>{label}</Text>
 
       <TouchableOpacity style={styles.input} onPress={() => setShow(true)}>
         <Feather name="calendar" size={20} color="#1A3A8F" />

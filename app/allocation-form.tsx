@@ -81,10 +81,11 @@ export default function AllocationScreen() {
         </View>
 
         {/* Date */}
-        <DateInput value={date} onChange={setDate} />
+        <DateInput value={date} onChange={setDate} label="ADD DATE" />
 
         {/* Toggle */}
-        <View style={styles.toggleRow}>
+
+        <View style={[styles.toggleRow, { marginVertical: 24 }]}>
           <Text style={styles.toggleText}>Recurring Transaction</Text>
           <Switch />
         </View>
@@ -92,11 +93,15 @@ export default function AllocationScreen() {
         {/* Threshold */}
         <Text style={styles.title}>Threshold Alert</Text>
 
-        <View style={styles.alertRow}>
-          <Ionicons name="notifications-outline" size={20} />
-          <View>
-            <Text style={styles.alertTitle}>Notify at 80%</Text>
-            <Text style={styles.alertSub}>SPENDING LIMIT</Text>
+        <View style={styles.toggleRow}>
+          <View style={styles.alertRow}>
+            <View style={styles.iconBox}>
+              <Ionicons name="notifications-outline" size={20} />
+            </View>
+            <View>
+              <Text style={styles.alertTitle}>Notify at 80%</Text>
+              <Text style={styles.alertSub}>SPENDING LIMIT</Text>
+            </View>
           </View>
           <Switch />
         </View>
@@ -135,34 +140,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  amountRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-
-  dollar: {
-    fontSize: 24,
-    color: Colors.textTertiary,
-  },
-
-  amount: {
-    fontSize: 48,
-    fontWeight: Typography.bold,
-    color: Colors.navy,
-  },
-
-  badge: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-    backgroundColor: Colors.navy,
-    padding: 10,
-    borderTopRightRadius: Radii["2xl"],
-    borderBottomLeftRadius: Radii["2xl"],
-  },
-
-  badgeText: { color: "#fff" },
-
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -171,27 +148,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  catItem: {
-    width: "30%",
-    backgroundColor: "#EDEFF5",
-    borderRadius: 12,
-    padding: 15,
-    alignItems: "center",
-  },
-
-  activeCat: {
-    backgroundColor: "#DCE6FF",
-  },
-
-  catText: {
-    marginTop: 5,
-    fontSize: 12,
+  toggleText: {
+    fontSize: Typography.lg,
+    fontWeight: Typography.medium,
   },
 
   title: {
-    fontSize: 16,
+    fontSize: Typography.xl,
     fontWeight: Typography.bold,
     marginBottom: 10,
+    color: Colors.navy,
   },
 
   segment: {
@@ -216,30 +182,13 @@ const styles = StyleSheet.create({
   segmentText: { color: "#666" },
   activeSegmentText: { color: Colors.navy },
 
-  dateRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: 15,
-  },
-
-  dateText: {
-    fontWeight: "600",
-  },
-
   toggleRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
-  },
-
-  toggleText: { fontWeight: "500" },
-
-  toggle: {
-    width: 40,
-    height: 20,
-    backgroundColor: "#ccc",
-    borderRadius: 10,
+    alignItems: "center",
+    backgroundColor: Colors.blueLight,
+    padding: 12,
+    borderRadius: Radii.xl,
   },
 
   alertRow: {
@@ -248,18 +197,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 
-  alertTitle: { fontWeight: "600" },
-  alertSub: { fontSize: 10, color: "#888" },
-
-  toggleActive: {
+  iconBox: {
     width: 40,
-    height: 20,
-    backgroundColor: Colors.navy,
-    borderRadius: 10,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: Colors.surface,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
 
-  placeholder: {
-    color: "#888",
+  alertTitle: {
+    fontWeight: Typography.bold,
+    color: Colors.navy,
+  },
+
+  alertSub: {
+    fontSize: 10,
+    color: Colors.textPrimary,
+    marginTop: 4,
   },
 
   noteCard: {
