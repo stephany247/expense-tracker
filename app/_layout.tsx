@@ -13,7 +13,6 @@ export default function RootLayout() {
   useEffect(() => {
     initCategories();
     console.log("default Categories saved");
-
   }, []);
 
   return (
@@ -35,7 +34,17 @@ export default function RootLayout() {
         <Stack.Screen
           name="add-category"
           options={{
-            title: "Add Category",
+            title: "New Category",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="allocation-form"
+          options={{
+            title: "Allocation",
             headerBackButtonDisplayMode: "minimal",
             headerStyle: {
               backgroundColor: Colors.blueGhost,

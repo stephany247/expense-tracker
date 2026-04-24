@@ -5,6 +5,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ComponentProps } from "react";
+import { CategoryItem } from "./CategoryItem";
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type Category = {
@@ -58,11 +59,14 @@ export const CategoryScroll = () => {
           }
 
           return (
-            <Pressable
-              key={item.name}
+            <CategoryItem
+              key={i}
+              name={item.name}
+              icon={item.icon as IconName}
+              isActive={isActive}
               onPress={() => {
                 setSelectedCategory(item);
-                console.log(item);
+
                 router.push({
                   pathname: "/add-transaction",
                   params: {
@@ -71,22 +75,7 @@ export const CategoryScroll = () => {
                   },
                 });
               }}
-              style={[styles.catItem, isActive && styles.activeCat]}
-            >
-              <Ionicons
-                name={item.icon as IconName}
-                size={28}
-                color={isActive ? Colors.navy : Colors.textBlack}
-              />
-              <Text
-                style={[
-                  styles.catText,
-                  isActive && { color: Colors.navy, fontWeight: "600" },
-                ]}
-              >
-                {item.name}
-              </Text>
-            </Pressable>
+            />
           );
         })}
       </ScrollView>
@@ -106,25 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: Typography.bold,
     color: Colors.textPrimary,
     marginBottom: 16,
-  },
-
-  catItem: {
-    paddingVertical: 24,
-    paddingHorizontal: 34,
-    borderRadius: 16,
-    backgroundColor: "#EDEFF5",
-    marginRight: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
-  catText: {
-    color: Colors.textBlack,
-  },
-
-  activeCat: {
-    borderWidth: 1,
-    borderColor: "#C7D7F5",
   },
 
   newCat: {

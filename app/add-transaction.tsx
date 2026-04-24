@@ -4,6 +4,7 @@ import { NameInput } from "@/components/inputs/NameInput";
 import { NotesInput } from "@/components/inputs/NotesInput";
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { getCategories } from "@/utils/category-storage";
+import { formatAmount } from "@/utils/format";
 import { saveTransaction } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
@@ -91,12 +92,6 @@ export default function AddTransaction() {
     } catch (error) {
       Alert.alert("Error", "Something went wrong");
     }
-  };
-
-  const formatAmount = (value: string) => {
-    const num = Number(value);
-    if (isNaN(num)) return "";
-    return num.toFixed(2);
   };
 
   const Tab = ({ label, value }: TabProps) => (
