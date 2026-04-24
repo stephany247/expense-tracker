@@ -2,6 +2,9 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
+import { defaultCategories } from "@/constants/categories";
+import { ComponentProps } from "react";
+type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type Transaction = {
   id: number;
@@ -17,6 +20,13 @@ type Props = {
 };
 
 function RecentLedger({ transactions }: Props) {
+  const categoryMap = Object.fromEntries(
+    defaultCategories.map((c) => [c.name.toLowerCase(), c.icon]),
+  );
+
+  const getCategoryIcon = (name: string) =>
+    categoryMap[name.toLowerCase()] || "wallet-outline";
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -29,24 +39,29 @@ function RecentLedger({ transactions }: Props) {
       {transactions.map((item) => (
         <View key={item.id} style={styles.ledgerItem}>
           <View style={styles.iconBox}>
-            <Ionicons name="wallet-outline" size={18} color="#1A3A8F" />
+            <Ionicons
+              name={getCategoryIcon(item.category) as IconName}
+              size={18}
+              color="#1A3A8F"
+            />
           </View>
 
           <View style={styles.textContainer}>
             <Text style={styles.itemTitle}>{item.name}</Text>
-            <Text style={styles.subtitle}>
-              {item.category} • {item.date}
-            </Text>
+            <Text style={styles.subtitle}>{item.category}</Text>
           </View>
 
-          <Text
-            style={[
-              styles.amount,
-              item.type === "expense" ? styles.expense : styles.income,
-            ]}
-          >
-            {item.type === "expense" ? "-" : "+"}${item.amount.toFixed(2)}
-          </Text>
+          <View style={styles.priceContainer}>
+            <Text
+              style={[
+                styles.amount,
+                item.type === "expense" ? styles.expense : styles.income,
+              ]}
+            >
+              {item.type === "expense" ? "-" : "+"}${item.amount.toFixed(2)}
+            </Text>
+            <Text style={styles.subtitle}>{item.date}</Text>
+          </View>
         </View>
       ))}
     </View>
@@ -104,6 +119,14 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
+    gap: 8,
+  },
+
+  priceContainer: {
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    gap: 8,
   },
 
   itemTitle: {
@@ -114,8 +137,9 @@ const styles = StyleSheet.create({
 
   subtitle: {
     fontSize: 11,
-    color: "#8A94A6",
+    color: Colors.textPrimary,
     marginTop: 2,
+    textTransform: "uppercase",
   },
 
   amount: {

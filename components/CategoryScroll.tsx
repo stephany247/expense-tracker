@@ -74,7 +74,7 @@ export const CategoryScroll = () => {
               style={[styles.catItem, isActive && styles.activeCat]}
             >
               <Ionicons
-                name={item.icon as any}
+                name={item.icon as IconName}
                 size={28}
                 color={isActive ? Colors.navy : Colors.textBlack}
               />
