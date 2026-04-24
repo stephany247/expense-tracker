@@ -23,3 +23,13 @@ export const getTransactions = async () => {
     throw error;
   }
 };
+
+//allocation store
+export const saveAllocation = async (allocation: any) => {
+  const existing = await AsyncStorage.getItem("allocations");
+  const parsed = existing ? JSON.parse(existing) : [];
+
+  parsed.push(allocation);
+
+  await AsyncStorage.setItem("allocations", JSON.stringify(parsed));
+};

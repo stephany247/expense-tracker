@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
+  Alert,
 } from "react-native";
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,6 +16,7 @@ import { defaultCategories } from "@/constants/categories";
 import { DateInput } from "@/components/inputs/DateInput";
 import { NotesInput } from "@/components/inputs/NotesInput";
 import { CategoryItem } from "@/components/category/CategoryItem";
+import { saveAllocation } from "@/utils/storage";
 
 export default function AllocationScreen() {
   const [amount, setAmount] = useState("");
@@ -22,6 +24,50 @@ export default function AllocationScreen() {
   const [date, setDate] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Food");
   const [timeframe, setTimeframe] = useState("Weekly");
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [thresholdEnabled, setThresholdEnabled] = useState(false);
+
+  const handleSave = async () => {
+    // validation
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      return Alert.alert("Error", "Enter a valid amount");
+    }
+
+    if (!date) {
+      return Alert.alert("Error", "Please select a date");
+    }
+
+    if (!selectedCategory) {
+      return Alert.alert("Error", "Select a category");
+    }
+
+    const data = {
+      id: Date.now(),
+      amount: Number(amount),
+      category: selectedCategory,
+      date,
+      note,
+      timeframe,
+      isRecurring,
+      thresholdEnabled,
+    };
+
+    try {
+      await saveAllocation(data);
+      Alert.alert("Success", "Allocation saved");
+
+      // reset
+      setAmount("");
+      setDate("");
+      setNote("");
+      setSelectedCategory("Food");
+      setTimeframe("Weekly");
+      setIsRecurring(false);
+      setThresholdEnabled(false);
+    } catch {
+      Alert.alert("Error", "Something went wrong");
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -87,7 +133,12 @@ export default function AllocationScreen() {
 
         <View style={[styles.toggleRow, { marginVertical: 24 }]}>
           <Text style={styles.toggleText}>Recurring Transaction</Text>
-          <Switch />
+          <Switch
+            value={isRecurring}
+            onValueChange={setIsRecurring}
+            trackColor={{ false: "#ccc", true: Colors.navyMid }}
+            thumbColor={isRecurring ? "#fff" : "#f4f3f4"}
+          />
         </View>
 
         {/* Threshold */}
@@ -103,7 +154,12 @@ export default function AllocationScreen() {
               <Text style={styles.alertSub}>SPENDING LIMIT</Text>
             </View>
           </View>
-          <Switch />
+          <Switch
+            value={thresholdEnabled}
+            onValueChange={setThresholdEnabled}
+            trackColor={{ false: "#ccc", true: Colors.navyMid }}
+            thumbColor={thresholdEnabled ? "#fff" : "#f4f3f4"}
+          />
         </View>
       </View>
 
@@ -113,7 +169,7 @@ export default function AllocationScreen() {
       </View>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Save Up!</Text>
       </TouchableOpacity>
     </ScrollView>
