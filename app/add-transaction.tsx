@@ -16,8 +16,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveTransaction } from "@/utils/storage";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { getCategories } from "@/utils/category-storage";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 type TabProps = {
   label: string;
@@ -35,6 +36,9 @@ export default function AddTransaction() {
   const [note, setNote] = useState("");
   const [categories, setCategories] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
+
+  const router = useRouter();
 
   useFocusEffect(() => {
     const load = async () => {
@@ -82,6 +86,8 @@ export default function AddTransaction() {
       setCategory("");
       setAmount("");
       setNote("");
+
+      router.replace("/(tabs)");
     } catch (error) {
       Alert.alert("Error", "Something went wrong");
     }
@@ -137,16 +143,31 @@ export default function AddTransaction() {
               </View>
 
               <Text style={styles.label}>ADD TRANSACTION DATE</Text>
-              <View style={styles.inputContainer}>
+              <TouchableOpacity
+                style={styles.inputContainer}
+                onPress={() => setShowPicker(true)}
+              >
                 <Feather name="calendar" size={20} color="#1A3A8F" />
 
-                <TextInput
-                  placeholder="11/24/2023"
-                  value={date}
-                  onChangeText={setDate}
-                  style={styles.input}
+                <Text style={{ padding: 12, flex: 1 }}>
+                  {date || "Select date"}
+                </Text>
+              </TouchableOpacity>
+              {showPicker && (
+                <DateTimePicker
+                  mode="date"
+                  display="default"
+                  value={new Date()}
+                  onChange={(event, selectedDate) => {
+                    setShowPicker(false);
+
+                    if (selectedDate) {
+                      const formatted = selectedDate.toLocaleDateString();
+                      setDate(formatted);
+                    }
+                  }}
                 />
-              </View>
+              )}
               <Text style={styles.label}>ADD ALLOCATION</Text>
               <View style={styles.inputContainer}>
                 <TextInput
