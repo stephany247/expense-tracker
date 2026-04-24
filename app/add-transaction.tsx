@@ -19,6 +19,8 @@ import { saveTransaction } from "@/utils/storage";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { getCategories } from "@/utils/category-storage";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { AmountInput } from "@/components/AmountInput";
+import { DateInput } from "@/components/DateInput";
 
 type TabProps = {
   label: string;
@@ -142,32 +144,7 @@ export default function AddTransaction() {
                 />
               </View>
 
-              <Text style={styles.label}>ADD TRANSACTION DATE</Text>
-              <TouchableOpacity
-                style={styles.inputContainer}
-                onPress={() => setShowPicker(true)}
-              >
-                <Feather name="calendar" size={20} color="#1A3A8F" />
-
-                <Text style={{ padding: 12, flex: 1 }}>
-                  {date || "Select date"}
-                </Text>
-              </TouchableOpacity>
-              {showPicker && (
-                <DateTimePicker
-                  mode="date"
-                  display="default"
-                  value={new Date()}
-                  onChange={(event, selectedDate) => {
-                    setShowPicker(false);
-
-                    if (selectedDate) {
-                      const formatted = selectedDate.toLocaleDateString();
-                      setDate(formatted);
-                    }
-                  }}
-                />
-              )}
+              <DateInput value={date} onChange={setDate} />
               <Text style={styles.label}>ADD ALLOCATION</Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -206,25 +183,11 @@ export default function AddTransaction() {
             </View>
 
             {/* Amount */}
-            <View style={styles.amountContainer}>
-              <Text style={styles.label}>AMOUNT</Text>
-              <View style={{ position: "relative" }}>
-                <Text style={styles.dollar}>$</Text>
-
-                <TextInput
-                  placeholder="0.00"
-                  value={amount}
-                  onChangeText={setAmount}
-                  onBlur={() => setAmount(formatAmount(amount))}
-                  style={styles.amountInput}
-                  keyboardType="numeric"
-                />
-              </View>
-
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>USD</Text>
-              </View>
-            </View>
+            <AmountInput
+              value={amount}
+              onChange={setAmount}
+              onBlur={() => setAmount(formatAmount(amount))}
+            />
 
             {/* Notes */}
             <View style={styles.card}>
