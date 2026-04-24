@@ -16,6 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveTransaction } from "@/utils/storage";
+import { useLocalSearchParams } from "expo-router";
 
 type TabProps = {
   label: string;
@@ -29,6 +30,8 @@ export default function AddTransaction() {
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
+
+  const { categoryId, categoryName } = useLocalSearchParams();
 
   const handleSave = async () => {
     // Validation

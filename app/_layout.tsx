@@ -1,6 +1,8 @@
 import { Colors } from "@/constants/theme";
+import { initCategories } from "@/utils/category-storage";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import "react-native-reanimated";
 
 export const unstable_settings = {
@@ -8,6 +10,12 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  useEffect(() => {
+    initCategories();
+    console.log("default Categories saved");
+
+  }, []);
+
   return (
     <>
       <StatusBar style="auto" />
@@ -18,6 +26,16 @@ export default function RootLayout() {
           name="add-transaction"
           options={{
             title: "Add Transaction",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="add-category"
+          options={{
+            title: "Add Category",
             headerBackButtonDisplayMode: "minimal",
             headerStyle: {
               backgroundColor: Colors.blueGhost,
