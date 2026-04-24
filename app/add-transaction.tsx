@@ -1,28 +1,24 @@
+import { AmountInput } from "@/components/inputs/AmountInput";
+import { DateInput } from "@/components/inputs/DateInput";
+import { NameInput } from "@/components/inputs/NameInput";
+import { NotesInput } from "@/components/inputs/NotesInput";
+import { Colors, Radii, Typography } from "@/constants/theme";
+import { getCategories } from "@/utils/category-storage";
+import { saveTransaction } from "@/utils/storage";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 import {
-  View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
+  View,
 } from "react-native";
-import { useLayoutEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors, Radii, Typography } from "@/constants/theme";
-import { Ionicons } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { saveTransaction } from "@/utils/storage";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { getCategories } from "@/utils/category-storage";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { AmountInput } from "@/components/AmountInput";
-import { DateInput } from "@/components/DateInput";
-import { NameInput } from "@/components/NameInput";
-import { NotesInput } from "@/components/NotesInput";
 
 type TabProps = {
   label: string;

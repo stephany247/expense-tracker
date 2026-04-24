@@ -1,9 +1,9 @@
-import { NotesInput } from "@/components/NotesInput";
+import { NotesInput } from "@/components/inputs/NotesInput";
 import { Colors, Typography } from "@/constants/theme";
 import { saveCategory } from "@/utils/category-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   Pressable,

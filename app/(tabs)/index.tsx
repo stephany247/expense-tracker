@@ -3,10 +3,10 @@ import { Colors } from "@/constants/theme";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { getTransactions } from "@/utils/storage";
-import PortfolioCard from "@/components/PortfolioCard";
-import Allocations from "@/components/Allocations";
-import RecentLedger from "@/components/RecentLedger";
-import Fab from "@/components/Fab";
+import PortfolioCard from "@/components/overview/PortfolioCard";
+import Allocations from "@/components/overview/Allocations";
+import RecentLedger from "@/components/overview/RecentLedger";
+import Fab from "@/components/overview/Fab";
 
 type Transaction = {
   id: number;

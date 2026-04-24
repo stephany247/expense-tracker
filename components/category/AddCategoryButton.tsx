@@ -1,11 +1,23 @@
 import { Colors, Typography } from "@/constants/theme";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text } from "react-native";
 
-export const AddCategoryButton = () => (
-  <Pressable style={styles.addBtn}>
-    <Text style={styles.btnText}>+ Add New Category</Text>
-  </Pressable>
-);
+export const AddCategoryButton = () => {
+  const router = useRouter();
+
+  return (
+    <Pressable
+      style={styles.addBtn}
+      onPress={() => {
+        router.push({
+          pathname: "/add-transaction",
+        });
+      }}
+    >
+      <Text style={styles.btnText}>+ Add New Category</Text>
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   addBtn: {
