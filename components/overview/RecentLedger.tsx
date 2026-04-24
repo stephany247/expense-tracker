@@ -4,16 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
 import { defaultCategories } from "@/constants/categories";
 import { ComponentProps } from "react";
+import { Transaction } from "@/utils/storage";
 type IconName = ComponentProps<typeof Ionicons>["name"];
-
-type Transaction = {
-  id: number;
-  name: string;
-  category: string;
-  date: string;
-  amount: number;
-  type: "expense" | "income";
-};
 
 type Props = {
   transactions: Transaction[];

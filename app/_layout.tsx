@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { initCategories } from "@/utils/category-storage";
+import { useAppStore } from "@/utils/storage";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -10,8 +10,10 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  const init = useAppStore((s) => s.init);
+
   useEffect(() => {
-    initCategories();
+    init();
     console.log("default Categories saved");
   }, []);
 

@@ -3,9 +3,8 @@ import { DateInput } from "@/components/inputs/DateInput";
 import { NameInput } from "@/components/inputs/NameInput";
 import { NotesInput } from "@/components/inputs/NotesInput";
 import { Colors, Radii, Typography } from "@/constants/theme";
-import { getCategories } from "@/utils/category-storage";
 import { formatAmount } from "@/utils/format";
-import { saveTransaction } from "@/utils/storage";
+import { Transaction, useAppStore } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
@@ -28,6 +27,8 @@ type TabProps = {
 
 export default function AddTransaction() {
   const { categoryId, categoryName } = useLocalSearchParams();
+  // const addTransaction = useAppStore((s) => s.addTransaction);
+  const { addTransaction, categories } = useAppStore();
 
   const [activeTab, setActiveTab] = useState("manual");
   const [name, setName] = useState("");
@@ -35,19 +36,9 @@ export default function AddTransaction() {
   const [category, setCategory] = useState((categoryName as string) || "");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
-  const [categories, setCategories] = useState<any[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
 
   const router = useRouter();
-
-  useFocusEffect(() => {
-    const load = async () => {
-      const data = await getCategories();
-      setCategories(data);
-    };
-    load();
-  });
 
   const handleSave = async () => {
     // Validation
@@ -67,7 +58,7 @@ export default function AddTransaction() {
       return Alert.alert("Error", "Enter a valid amount");
     }
 
-    const data = {
+    const data:Transaction = {
       id: Date.now(),
       name,
       date,
@@ -78,7 +69,7 @@ export default function AddTransaction() {
     };
 
     try {
-      await saveTransaction(data);
+      addTransaction(data);
       Alert.alert("Success", "Transaction saved!");
 
       // reset form

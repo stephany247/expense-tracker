@@ -6,7 +6,7 @@ function Allocations() {
   const router = useRouter();
   return (
     <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>ALLOCATIONS</Text>
+      <Text style={styles.sectionTitle}>Allocations</Text>
       <Pressable onPress={() => router.navigate("/allocation-form")}>
         <Text style={styles.link}>VIEW ALL</Text>
       </Pressable>

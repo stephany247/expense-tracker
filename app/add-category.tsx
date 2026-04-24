@@ -1,6 +1,6 @@
 import { NotesInput } from "@/components/inputs/NotesInput";
 import { Colors, Typography } from "@/constants/theme";
-import { saveCategory } from "@/utils/category-storage";
+import { useAppStore } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -20,6 +20,7 @@ function AddCategory() {
   const [amount, setAmount] = useState("");
 
   const router = useRouter();
+  const { addCategory } = useAppStore();
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -39,7 +40,7 @@ function AddCategory() {
     };
 
     try {
-      await saveCategory(data);
+      await addCategory(data);
       Alert.alert("Success", "Category created");
       router.back();
     } catch {

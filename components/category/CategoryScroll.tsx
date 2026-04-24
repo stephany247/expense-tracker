@@ -1,40 +1,27 @@
 import { Colors, Radii, Typography } from "@/constants/theme";
-import { getCategories } from "@/utils/category-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { ComponentProps } from "react";
 import { CategoryItem } from "./CategoryItem";
+import { Category, useAppStore } from "@/utils/storage";
 type IconName = ComponentProps<typeof Ionicons>["name"];
-
-type Category = {
-  id: number;
-  name: string;
-  icon: string;
-  budget?: number;
-};
 
 export const CategoryScroll = () => {
   const router = useRouter();
+  const { categories } = useAppStore();
 
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
 
   useFocusEffect(
     useCallback(() => {
-      const load = async () => {
-        const data = await getCategories();
-        setCategories(data);
-
-        if (data.length > 0) {
-          setSelectedCategory(data[0]);
-        }
-      };
-      load();
-    }, []),
+      if (categories.length > 0 && !selectedCategory) {
+        setSelectedCategory(categories[0]);
+      }
+    }, [categories, selectedCategory]),
   );
   return (
     <View style={styles.scrollContainer}>

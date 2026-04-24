@@ -16,7 +16,7 @@ import { defaultCategories } from "@/constants/categories";
 import { DateInput } from "@/components/inputs/DateInput";
 import { NotesInput } from "@/components/inputs/NotesInput";
 import { CategoryItem } from "@/components/category/CategoryItem";
-import { saveAllocation } from "@/utils/storage";
+import { useAppStore } from "@/utils/storage";
 
 export default function AllocationScreen() {
   const [amount, setAmount] = useState("");
@@ -26,6 +26,8 @@ export default function AllocationScreen() {
   const [timeframe, setTimeframe] = useState("Weekly");
   const [isRecurring, setIsRecurring] = useState(false);
   const [thresholdEnabled, setThresholdEnabled] = useState(false);
+
+  const { addAllocation } = useAppStore();
 
   const handleSave = async () => {
     // validation
@@ -53,7 +55,7 @@ export default function AllocationScreen() {
     };
 
     try {
-      await saveAllocation(data);
+      addAllocation(data);
       Alert.alert("Success", "Allocation saved");
 
       // reset
