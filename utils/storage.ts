@@ -2,8 +2,6 @@ import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultCategories } from "@/constants/categories";
 
-// types/index.ts
-
 export type Transaction = {
   id: number;
   name: string;
@@ -73,6 +71,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       allocations: a ? JSON.parse(a) : [],
       categories,
     });
+    console.log("TRANSACTIONS RAW:", t);
+    console.log("ALLOCATIONS RAW:", a);
+    console.log("CATEGORIES RAW:", c);
   },
 
   // TRANSACTIONS
