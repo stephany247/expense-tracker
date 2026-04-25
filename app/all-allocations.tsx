@@ -5,9 +5,10 @@ import {
   ScrollView,
   Pressable,
   FlatList,
+  Alert,
 } from "react-native";
 import { Colors, Radii, Typography } from "@/constants/theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Allocation,
   Category,
@@ -24,6 +25,7 @@ export default function AllocationsScreen() {
   const router = useRouter();
 
   const [active, setActive] = useState("All");
+  const [alerted, setAlerted] = useState<string[]>([]);
 
   const data = categories.map((cat) => {
     const allocation = allocations.find(
@@ -44,11 +46,31 @@ export default function AllocationsScreen() {
       spent,
       remaining,
       progress: allocated ? spent / allocated : 0,
+      thresholdEnabled: allocation?.thresholdEnabled || false,
+      threshold: allocation?.threshold || 0.8,
     };
   });
 
   const filtered =
     active === "All" ? data : data.filter((d) => d.name === active);
+
+  useEffect(() => {
+    data.forEach((item) => {
+      const progress = item.progress;
+
+      const isNearLimit =
+        item.thresholdEnabled && progress >= (item.threshold || 0.8);
+
+      if (isNearLimit && !alerted.includes(item.name)) {
+        Alert.alert(
+          "Warning",
+          `You’ve used ${Math.floor(progress * 100)}% of your ${item.name} budget`,
+        );
+
+        setAlerted((prev) => [...prev, item.name]);
+      }
+    });
+  }, [data]);
 
   return (
     <View style={styles.container}>

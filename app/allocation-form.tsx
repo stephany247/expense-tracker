@@ -23,7 +23,9 @@ export default function AllocationScreen() {
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("Food");
-  const [timeframe, setTimeframe] = useState("Weekly");
+  const [timeframe, setTimeframe] = useState<"daily" | "weekly" | "monthly">(
+    "weekly",
+  );
   const [isRecurring, setIsRecurring] = useState(false);
   const [thresholdEnabled, setThresholdEnabled] = useState(false);
 
@@ -52,6 +54,7 @@ export default function AllocationScreen() {
       timeframe,
       isRecurring,
       thresholdEnabled,
+      threshold: 0.8,
     };
 
     try {
@@ -63,7 +66,7 @@ export default function AllocationScreen() {
       setDate("");
       setNote("");
       setSelectedCategory("Food");
-      setTimeframe("Weekly");
+      setTimeframe("weekly");
       setIsRecurring(false);
       setThresholdEnabled(false);
     } catch {
@@ -107,19 +110,21 @@ export default function AllocationScreen() {
         <Text style={styles.title}>Timeframe</Text>
 
         <View style={styles.segment}>
-          {["Daily", "Weekly", "Monthly"].map((t) => {
+          {["daily", "weekly", "monthly"].map((t) => {
             const isActive = timeframe === t;
+            const value = t.toLowerCase() as "daily" | "weekly" | "monthly";
 
             return (
               <TouchableOpacity
                 key={t}
-                onPress={() => setTimeframe(t)}
+                onPress={() => setTimeframe(value)}
                 style={[styles.segmentItem, isActive && styles.activeSegment]}
               >
                 <Text
-                  style={
-                    isActive ? styles.activeSegmentText : styles.segmentText
-                  }
+                  style={[
+                    styles.segText,
+                    isActive ? styles.activeSegmentText : styles.segmentText,
+                  ]}
                 >
                   {t}
                 </Text>
@@ -237,8 +242,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
 
+  segText: { textTransform: "capitalize" },
   segmentText: { color: "#666" },
-  activeSegmentText: { color: Colors.navy },
+  activeSegmentText: {
+    color: Colors.navy,
+  },
 
   toggleRow: {
     flexDirection: "row",
