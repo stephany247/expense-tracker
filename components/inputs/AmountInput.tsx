@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   input: {
     paddingTop: 12,
     paddingLeft: 30,
-    paddingRight: 60,
     fontSize: 72,
     fontWeight: Typography.bold,
     color: Colors.navy,

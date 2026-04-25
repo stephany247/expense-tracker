@@ -7,6 +7,7 @@ import { ComponentProps } from "react";
 import { Transaction } from "@/utils/storage";
 import { LedgerItem } from "./LedgerItem";
 import { useRouter } from "expo-router";
+import { CTA } from "./CTA";
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type Props = {
@@ -32,27 +33,13 @@ function RecentLedger({ transactions }: Props) {
         </Pressable>
       </View>
 
-      {transactions.map((item) => (
+      {transactions.slice(0, 8).map((item) => (
         <LedgerItem
           key={item.id}
           item={item}
           icon={getIcon(item.category) as IconName}
         />
       ))}
-
-      {/* CTA */}
-      <View style={styles.cta}>
-        <View style={styles.ctaIcon}>
-          <Ionicons name="card-outline" size={22} color={Colors.navy} />
-        </View>
-
-        <Text style={styles.ctaTitle}>New Entry</Text>
-        <Text style={styles.ctaSub}>Record a new Allocation</Text>
-
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>Quick Add</Text>
-        </View>
-      </View>
     </View>
   );
 }

@@ -1,3 +1,4 @@
+import { CaptureBox } from "@/components/CaptureBox";
 import { AmountInput } from "@/components/inputs/AmountInput";
 import { DateInput } from "@/components/inputs/DateInput";
 import { NameInput } from "@/components/inputs/NameInput";
@@ -12,6 +13,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -37,6 +39,8 @@ export default function AddTransaction() {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [type, setType] = useState<"expense" | "income" | "">("");
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
 
   const router = useRouter();
 
@@ -54,18 +58,22 @@ export default function AddTransaction() {
       return Alert.alert("Error", "Category is required");
     }
 
+    if (type !== "expense" && type !== "income") {
+      return Alert.alert("Error", "Select transaction type");
+    }
+
     if (!amount || isNaN(Number(amount))) {
       return Alert.alert("Error", "Enter a valid amount");
     }
 
-    const data:Transaction = {
+    const data: Transaction = {
       id: Date.now(),
       name,
       date,
       category,
       amount: Number(amount),
       note,
-      type: "expense",
+      type: type as "expense" | "income",
     };
 
     try {
@@ -155,6 +163,60 @@ export default function AddTransaction() {
                   ))}
                 </View>
               )}
+
+              <Text style={styles.label}>TRANSACTION TYPE</Text>
+
+              <View style={styles.inputContainer}>
+                <View style={styles.iconBox}>
+                  <Ionicons
+                    name={type === "income" ? "arrow-down" : "arrow-up"}
+                    size={18}
+                    color={Colors.navy}
+                  />
+                </View>
+
+                <TextInput
+                  placeholder="Type"
+                  value={
+                    type
+                      ? type === "income"
+                        ? "Income"
+                        : "Expense"
+                      : "Select type"
+                  }
+                  editable={false}
+                  style={styles.input}
+                />
+
+                <TouchableOpacity
+                  onPress={() => setShowTypeDropdown(!showTypeDropdown)}
+                >
+                  <Ionicons
+                    name="chevron-down"
+                    size={20}
+                    color={Colors.gray600}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {showTypeDropdown && (
+                <View style={styles.dropdown}>
+                  {["expense", "income"].map((item) => (
+                    <TouchableOpacity
+                      key={item}
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setType(item as "income" | "expense");
+                        setShowTypeDropdown(false);
+                      }}
+                    >
+                      <Text style={{ textTransform: "capitalize" }}>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             {/* Amount */}
@@ -182,19 +244,6 @@ export default function AddTransaction() {
     </KeyboardAvoidingView>
   );
 }
-
-const CaptureBox = () => {
-  return (
-    <View style={styles.captureBox}>
-      <View style={styles.iconBox}>
-        <Text style={{ fontSize: 24 }}>＋</Text>
-      </View>
-
-      <Text style={styles.captureTitle}>Capture something</Text>
-      <Text style={styles.captureSub}>Figure this one out!!!</Text>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -355,34 +404,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
-  captureBox: {
-    height: 300,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    borderColor: "#AAB6D6",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
 
   iconBox: {
-    width: 60,
-    height: 60,
     backgroundColor: "#DDE6F8",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-
-  captureTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 5,
-  },
-
-  captureSub: {
-    color: "#777",
+    borderRadius: Radii.xs,
+    padding: 6,
+    marginLeft: -6,
   },
 });

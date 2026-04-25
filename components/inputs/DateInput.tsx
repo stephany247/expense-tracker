@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Button,
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -36,7 +37,7 @@ export const DateInput = ({
       {show && (
         <DateTimePicker
           mode="date"
-          display={Platform.OS === "ios" ? "spinner" : "default"}
+          display={Platform.OS === "ios" ? "inline" : "default"}
           value={new Date()}
           onChange={(event, selectedDate) => {
             setShow(false);
