@@ -1,7 +1,7 @@
 import { Colors, Spacing, Typography } from "@/constants/theme";
 import { useAppStore } from "@/utils/storage";
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { AllocationCard } from "./AllocationCard";
 import { normalizeCat } from "@/utils/format";
 
@@ -38,11 +38,14 @@ function Allocations() {
           <Text style={styles.link}>VIEW ALL</Text>
         </Pressable>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {data.map((item) => (
-          <AllocationCard key={item.id} item={item} />
-        ))}
-      </ScrollView>
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => <AllocationCard item={item} />}
+        ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+      />
     </View>
   );
 }

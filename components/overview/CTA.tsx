@@ -3,7 +3,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-export const CTA = () => {
+type Props = {
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+  route?: string;
+};
+
+export const CTA = ({
+  title = "New Allocation",
+  subtitle = "Record a new Allocation",
+  buttonText = "Quick Add",
+  route = "/allocation-form",
+}: Props) => {
   const router = useRouter();
 
   return (
@@ -15,14 +27,15 @@ export const CTA = () => {
           color={Colors.navy}
         />
       </View>
-      <Text style={styles.ctaTitle}>New Allocation</Text>
-      <Text style={styles.ctaSub}>Record a new Allocation</Text>
+
+      <Text style={styles.ctaTitle}>{title}</Text>
+      <Text style={styles.ctaSub}>{subtitle}</Text>
 
       <Pressable
         style={styles.button}
-        onPress={() => router.navigate("/add-transaction")}
+        onPress={() => router.navigate(route as any)}
       >
-        <Text style={styles.buttonText}>Quick Add</Text>
+        <Text style={styles.buttonText}>{buttonText}</Text>
       </Pressable>
     </View>
   );

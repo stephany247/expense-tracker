@@ -34,7 +34,13 @@ export default function RecentLedgersScreen() {
         renderItem={({ item }) => (
           <LedgerItem item={item} icon={getIcon(item.category) as IconName} />
         )}
-        ListFooterComponent={<CTA />}
+        ListFooterComponent={
+          <CTA
+            title="New Entry"
+            subtitle="Add a new transaction"
+            route="/add-transaction"
+          />
+        }
         contentContainerStyle={{ paddingBottom: 40 }}
       />
     </View>

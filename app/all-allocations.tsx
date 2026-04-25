@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  FlatList,
+} from "react-native";
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { useState } from "react";
 import {
@@ -10,6 +17,7 @@ import {
 import { AllocationItemCard } from "@/components/overview/AllocationItemCard";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { CTA } from "@/components/overview/CTA";
 
 export default function AllocationsScreen() {
   const { categories, allocations, transactions } = useAppStore();
@@ -43,53 +51,43 @@ export default function AllocationsScreen() {
     active === "All" ? data : data.filter((d) => d.name === active);
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Tabs */}
-      <ScrollView
-        style={styles.tabList}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      >
-        {["All", ...categories.map((c: Category) => c.name)].map((tab) => {
-          const isActive = active === tab;
+    <View style={styles.container}>
+      <FlatList
+        data={filtered}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => <AllocationItemCard item={item} />}
+        ListHeaderComponent={
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabList}
+          >
+            {["All", ...categories.map((c) => c.name)].map((tab) => {
+              const isActive = active === tab;
 
-          return (
-            <Text
-              key={tab}
-              onPress={() => setActive(tab)}
-              style={[styles.tab, isActive && styles.activeTab]}
-            >
-              {tab}
-            </Text>
-          );
-        })}
-      </ScrollView>
-
-      {/* Cards */}
-      {filtered.map((item) => (
-        <AllocationItemCard key={item.id} item={item} />
-      ))}
-
-      {/* CTA */}
-      <View style={styles.cta}>
-        <View style={styles.cardIconBox}>
-          <MaterialCommunityIcons
-            name="credit-card-plus-outline"
-            size={28}
-            color={Colors.navy}
-          />
-        </View>
-        <Text style={styles.ctaTitle}>New Allocation</Text>
-        <Text style={styles.ctaSub}>Record a new Allocation</Text>
-
-        <Pressable
-          style={styles.button}
-          onPress={() => router.navigate("/allocation-form")}
-        >
-          <Text style={styles.buttonText}>Quick Add</Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+              return (
+                <Pressable
+                  key={tab}
+                  onPress={() => setActive(tab)}
+                  style={({ pressed }) => [
+                    styles.tab,
+                    isActive && styles.activeTab,
+                    pressed && { opacity: 0.7 },
+                  ]}
+                >
+                  <Text
+                    style={[styles.tabText, isActive && styles.activeTabText]}
+                  >
+                    {tab}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </ScrollView>
+        }
+        ListFooterComponent={<CTA />}
+      />
+    </View>
   );
 }
 
@@ -111,11 +109,18 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 10,
     backgroundColor: Colors.surfaceSecondary,
-    fontWeight: Typography.medium,
   },
 
   activeTab: {
     backgroundColor: Colors.blueLight,
+  },
+
+  tabText: {
+    fontWeight: Typography.medium,
+    color: Colors.textPrimary,
+  },
+
+  activeTabText: {
     color: Colors.navy,
   },
 
