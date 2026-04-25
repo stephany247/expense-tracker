@@ -1,10 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
 import { defaultCategories } from "@/constants/categories";
 import { ComponentProps } from "react";
 import { Transaction } from "@/utils/storage";
+import { LedgerItem } from "./LedgerItem";
+import { useRouter } from "expo-router";
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
 type Props = {
@@ -12,54 +14,48 @@ type Props = {
 };
 
 function RecentLedger({ transactions }: Props) {
+  const router = useRouter();
+
   const categoryMap = Object.fromEntries(
     defaultCategories.map((c) => [c.name.toLowerCase(), c.icon]),
   );
 
-  const getCategoryIcon = (name: string) =>
+  const getIcon = (name: string) =>
     categoryMap[name.toLowerCase()] || "wallet-outline";
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Recent Ledger</Text>
-        <Text style={styles.link}>VIEW ALL</Text>
+        <Pressable onPress={() => router.navigate("/recent-ledgers")}>
+          <Text style={styles.link}>VIEW ALL</Text>
+        </Pressable>
       </View>
 
-      {/* Items */}
       {transactions.map((item) => (
-        <View key={item.id} style={styles.ledgerItem}>
-          <View style={styles.iconBox}>
-            <Ionicons
-              name={getCategoryIcon(item.category) as IconName}
-              size={18}
-              color="#1A3A8F"
-            />
-          </View>
-
-          <View style={styles.textContainer}>
-            <Text style={styles.itemTitle}>{item.name}</Text>
-            <Text style={styles.subtitle}>{item.category}</Text>
-          </View>
-
-          <View style={styles.priceContainer}>
-            <Text
-              style={[
-                styles.amount,
-                item.type === "expense" ? styles.expense : styles.income,
-              ]}
-            >
-              {item.type === "expense" ? "-" : "+"}${item.amount.toFixed(2)}
-            </Text>
-            <Text style={styles.subtitle}>{item.date}</Text>
-          </View>
-        </View>
+        <LedgerItem
+          key={item.id}
+          item={item}
+          icon={getIcon(item.category) as IconName}
+        />
       ))}
+
+      {/* CTA */}
+      <View style={styles.cta}>
+        <View style={styles.ctaIcon}>
+          <Ionicons name="card-outline" size={22} color={Colors.navy} />
+        </View>
+
+        <Text style={styles.ctaTitle}>New Entry</Text>
+        <Text style={styles.ctaSub}>Record a new Allocation</Text>
+
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Quick Add</Text>
+        </View>
+      </View>
     </View>
   );
 }
-
 export default RecentLedger;
 
 const styles = StyleSheet.create({
@@ -145,5 +141,46 @@ const styles = StyleSheet.create({
 
   income: {
     color: "#2E7D32",
+  },
+  cta: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: Radii["2xl"],
+    alignItems: "center",
+    marginTop: 20,
+  },
+
+  ctaIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    backgroundColor: "#E5EDFF",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  ctaTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  ctaSub: {
+    fontSize: 12,
+    color: "#666",
+  },
+
+  button: {
+    backgroundColor: Colors.navy,
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 12,
+    width: "100%",
+    alignItems: "center",
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
   },
 });

@@ -63,6 +63,16 @@ export default function RootLayout() {
             },
           }}
         />
+        <Stack.Screen
+          name="recent-ledgers"
+          options={{
+            title: "Recent Ledgers",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
+        />
       </Stack>
     </>
   );

@@ -4,5 +4,13 @@ export const formatAmount = (value: string) => {
   return num.toFixed(2);
 };
 
-export const normalizeCat = (str?: string) =>
-  str?.trim().toLowerCase();
+export const normalizeCat = (str?: string) => str?.trim().toLowerCase();
+
+export const formatTime = (id: number) => {
+  const date = new Date(id);
+
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
