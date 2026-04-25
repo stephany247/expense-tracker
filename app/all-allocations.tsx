@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { useState } from "react";
 import {
@@ -8,9 +8,12 @@ import {
   useAppStore,
 } from "@/utils/storage";
 import { AllocationItemCard } from "@/components/overview/AllocationItemCard";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function AllocationsScreen() {
   const { categories, allocations, transactions } = useAppStore();
+  const router = useRouter();
 
   const [active, setActive] = useState("All");
 
@@ -42,7 +45,11 @@ export default function AllocationsScreen() {
   return (
     <ScrollView style={styles.container}>
       {/* Tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        style={styles.tabList}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
         {["All", ...categories.map((c: Category) => c.name)].map((tab) => {
           const isActive = active === tab;
 
@@ -65,12 +72,22 @@ export default function AllocationsScreen() {
 
       {/* CTA */}
       <View style={styles.cta}>
+        <View style={styles.cardIconBox}>
+          <MaterialCommunityIcons
+            name="credit-card-plus-outline"
+            size={28}
+            color={Colors.navy}
+          />
+        </View>
         <Text style={styles.ctaTitle}>New Allocation</Text>
         <Text style={styles.ctaSub}>Record a new Allocation</Text>
 
-        <View style={styles.button}>
+        <Pressable
+          style={styles.button}
+          onPress={() => router.navigate("/allocation-form")}
+        >
           <Text style={styles.buttonText}>Quick Add</Text>
-        </View>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -83,16 +100,23 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
+  tabList: {
+    backgroundColor: Colors.surface,
+    padding: 4,
+    borderRadius: Radii.sm,
+  },
+
   tab: {
     padding: 10,
     marginRight: 8,
     borderRadius: 10,
-    backgroundColor: "#EEF2FF",
+    backgroundColor: Colors.surfaceSecondary,
+    fontWeight: Typography.medium,
   },
 
   activeTab: {
-    backgroundColor: Colors.navy,
-    color: "#fff",
+    backgroundColor: Colors.blueLight,
+    color: Colors.navy,
   },
 
   card: {
@@ -142,21 +166,30 @@ const styles = StyleSheet.create({
 
   cta: {
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 24,
     borderRadius: 20,
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 32,
   },
 
   ctaTitle: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: Typography.xl,
+    fontWeight: Typography.bold,
     marginTop: 10,
   },
 
   ctaSub: {
-    fontSize: 12,
-    color: "#666",
+    fontSize: Typography.base,
+    color: Colors.textSecondary,
+    marginBottom: 20,
+  },
+
+  cardIconBox: {
+    padding: 20,
+    backgroundColor: Colors.blueLight,
+    borderRadius: Radii.xl,
+    marginBottom: 16,
   },
 
   buttonText: {
@@ -165,7 +198,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: Colors.navy,
+    backgroundColor: Colors.navyMid,
     padding: 14,
     borderRadius: 12,
     marginTop: 10,

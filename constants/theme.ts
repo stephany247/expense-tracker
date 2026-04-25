@@ -14,7 +14,7 @@ export const Colors = {
   successLight: "#E6F7EE",
   successBright: "#12B76A",
   danger: "#BA1A1A",
-  dangerLight: "#FFF0F0",
+  dangerLight: "#FFDAD6",
   warning: "#B45309",
   warningLight: "#FFF8EC",
   warningBright: "#F59E0B",

@@ -53,6 +53,16 @@ export default function RootLayout() {
             },
           }}
         />
+        <Stack.Screen
+          name="all-allocations"
+          options={{
+            title: "Allocation",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
+        />
       </Stack>
     </>
   );

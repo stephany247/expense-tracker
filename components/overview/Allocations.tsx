@@ -34,7 +34,7 @@ function Allocations() {
     <View>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Allocations</Text>
-        <Pressable onPress={() => router.navigate("/allocation-form")}>
+        <Pressable onPress={() => router.navigate("/all-allocations")}>
           <Text style={styles.link}>VIEW ALL</Text>
         </Pressable>
       </View>

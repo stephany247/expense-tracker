@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/theme";
+import { Colors, Typography } from "@/constants/theme";
 import { AllocationItem, IconName } from "./AllocationCard";
 
 type Props = {
@@ -12,10 +12,10 @@ export const AllocationItemCard = ({ item }: Props) => {
 
   const status =
     percent >= 90
-      ? { label: "AT LIMIT", color: "#FEE2E2" }
+      ? { label: "AT LIMIT", bg: Colors.dangerLight, text: Colors.danger }
       : percent < 60
-        ? { label: "HEALTHY", color: "#D1FAE5" }
-        : { label: "ON TRACK", color: "#E5E7EB" };
+        ? { label: "HEALTHY", bg: Colors.successLight, text: Colors.success }
+        : { label: "ON TRACK", bg: Colors.gray300, text: Colors.gray800 };
 
   return (
     <View style={styles.card}>
@@ -24,41 +24,44 @@ export const AllocationItemCard = ({ item }: Props) => {
           <Ionicons name={item.icon as IconName} size={20} />
         </View>
 
-        <View style={[styles.badge, { backgroundColor: status.color }]}>
+        <View style={[styles.badge, { backgroundColor: status.bg }]}>
           <Text style={styles.badgeText}>{status.label}</Text>
         </View>
       </View>
 
       <Text style={styles.title}>{item.name}</Text>
 
-      <Text style={styles.amount}>
-        ${item.spent} <Text style={styles.gray}>/ ${item.allocated}</Text>
-      </Text>
+      <View style={styles.textRow}>
+        <Text style={styles.amount}>${item.spent} </Text>
+        <Text style={styles.gray}>/ ${item.allocated}</Text>
+      </View>
 
+      <View style={styles.usage}>
+        <Text style={styles.usageText}>USED {percent}%</Text>
+
+        <Text
+          style={[
+            styles.usageText,
+            {
+              color: status.text,
+            },
+          ]}
+        >
+          {item.remaining < 0
+            ? `-$${Math.abs(item.remaining)} LEFT`
+            : `+$${item.remaining} LEFT`}
+        </Text>
+      </View>
       <View style={styles.progressBg}>
         <View
           style={[
             styles.progressFill,
             {
               width: `${percent}%`,
-              backgroundColor: percent >= 90 ? "#DC2626" : Colors.navy,
+              backgroundColor: status.text,
             },
           ]}
         />
-      </View>
-
-      <View style={styles.footer}>
-        <Text>USED {percent}%</Text>
-
-        <Text
-          style={{
-            color: item.remaining < 0 ? "#DC2626" : Colors.successBright,
-          }}
-        >
-          {item.remaining < 0
-            ? `-$${Math.abs(item.remaining)} LEFT`
-            : `+$${item.remaining} LEFT`}
-        </Text>
       </View>
     </View>
   );
@@ -75,6 +78,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
   },
 
   iconBox: {
@@ -87,8 +92,8 @@ const styles = StyleSheet.create({
   },
 
   badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
     borderRadius: 12,
   },
 
@@ -98,36 +103,46 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 16,
+    fontSize: Typography["2xl"],
     fontWeight: "600",
     marginTop: 10,
   },
 
+  textRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+  },
+
   amount: {
-    fontSize: 18,
+    fontSize: Typography["4xl"],
     fontWeight: "700",
     marginTop: 4,
   },
 
   gray: {
-    color: "#777",
+    color: Colors.textPrimary,
+    fontWeight: "300",
   },
 
   progressBg: {
-    height: 8,
+    height: 10,
     backgroundColor: "#E5E7EB",
     borderRadius: 4,
     marginTop: 10,
   },
 
   progressFill: {
-    height: 8,
+    height: 10,
     borderRadius: 4,
   },
 
-  footer: {
+  usage: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 18,
+  },
+  usageText: {
+    fontWeight: Typography.bold,
+    fontSize: Typography.sm,
   },
 });
