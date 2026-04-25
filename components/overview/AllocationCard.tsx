@@ -22,6 +22,15 @@ type Props = {
 export const AllocationCard = ({ item }: Props) => {
   const isOver = item.remaining < 0;
 
+  const percent = Math.floor(item.progress * 100);
+
+  const status =
+    percent >= 90
+      ? { label: "AT LIMIT", bg: Colors.dangerLight, text: Colors.danger }
+      : percent < 60
+        ? { label: "HEALTHY", bg: Colors.successLight, text: Colors.success }
+        : { label: "ON TRACK", bg: Colors.gray300, text: Colors.gray800 };
+
   return (
     <View style={styles.card}>
       <View style={styles.iconBox}>
@@ -39,13 +48,13 @@ export const AllocationCard = ({ item }: Props) => {
             styles.fill,
             {
               width: `${Math.min(item.progress * 100, 100)}%`,
-              backgroundColor: isOver ? Colors.danger : Colors.navy,
+              backgroundColor: status.text,
             },
           ]}
         />
       </View>
 
-      <Text style={[styles.left, isOver && { color: Colors.danger }]}>
+      <Text style={[styles.left, { color: status.text }]}>
         {isOver
           ? `$${Math.floor(Math.abs(item.remaining))} LEFT`
           : `$${Math.floor(item.remaining)} LEFT`}
