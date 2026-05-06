@@ -32,7 +32,7 @@ function PortfolioCard() {
           {change.toFixed(1)}%
         </Text>
       </View>
-      <Text style={styles.balance}>{formatCurrency(balance)}</Text>
+      <Text style={styles.balance}>{formatCurrency(balance)} mrhrrg</Text>
       <Text style={styles.sub}>Market valuation as of today</Text>
 
       <View style={styles.row}>

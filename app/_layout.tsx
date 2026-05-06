@@ -22,6 +22,11 @@ export default function RootLayout() {
       <StatusBar style="auto" />
 
       <Stack>
+        <Stack.Screen
+          name="identity-verification"
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="add-transaction"
@@ -67,6 +72,16 @@ export default function RootLayout() {
           name="recent-ledgers"
           options={{
             title: "Recent Ledgers",
+            headerBackButtonDisplayMode: "minimal",
+            headerStyle: {
+              backgroundColor: Colors.blueGhost,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="identity-verification"
+          options={{
+            title: "",
             headerBackButtonDisplayMode: "minimal",
             headerStyle: {
               backgroundColor: Colors.blueGhost,
