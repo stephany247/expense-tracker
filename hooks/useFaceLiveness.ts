@@ -62,7 +62,7 @@ export default function useFaceLiveness() {
     }
   }, []);
 
-  // ── Start detection ──────────────────────
+  //  Start detection
   const startDetection = useCallback(() => {
     if (attemptCount >= MAX_ATTEMPTS) {
       setLivenessState(LivenessState.FAILED);
@@ -111,36 +111,6 @@ export default function useFaceLiveness() {
     setErrorMessage("");
   }, [stopDetection]);
 
-  // ── Frame processor ─────────────────────
-  // const onFacesDetected = useCallback(
-  //   (faces: Face[]) => {
-  //     "worklet";
-
-  //     // ❗ IMPORTANT FIX
-  //     // Worklet cannot read useRef safely → pass via runOnJS OR simplify
-  //     if (!faces || faces.length === 0) return;
-
-  //     const face = faces[0];
-
-  //     const box = {
-  //       x: face.bounds?.x ?? 0,
-  //       y: face.bounds?.y ?? 0,
-  //       w: face.bounds?.width ?? 0,
-  //       h: face.bounds?.height ?? 0,
-  //     };
-
-  //     runOnJS(setFaceBox)(box);
-  //     runOnJS(_setStateSafe)(LivenessState.FACE_DETECTED);
-
-  //     const left = face.leftEyeOpenProbability ?? 1;
-  //     const right = face.rightEyeOpenProbability ?? 1;
-  //     const avg = (left + right) / 2;
-
-  //     runOnJS(handleBlinkLogic)(avg);
-  //   },
-  //   [_setStateSafe],
-  // );
-
   const processFaces = useCallback((faces: any[]) => {
     if (!isActiveRef.current || !faces || faces.length === 0) return; // isActive → isActiveRef
 
@@ -150,36 +120,10 @@ export default function useFaceLiveness() {
     const rightOpen = face.rightEyeOpenProbability ?? 1;
     const avgOpen = (leftOpen + rightOpen) / 2;
     const smilingProb = face.smilingProbability ?? 0;
-    console.log(
-      "full face data:",
-      JSON.stringify({
-        smile: face.smilingProbability,
-        leftEye: face.leftEyeOpenProbability,
-        rightEye: face.rightEyeOpenProbability,
-        hasContours: !!face.contours,
-        hasBounds: !!face.bounds,
-      }),
-    );
 
-    // if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {
-    //   // eyeWasClosed → eyeWasClosedRef
-    //   eyeWasClosedRef.current = true;
-    //   setLivenessState(LivenessState.BLINKING);
-    // } else if (eyeWasClosedRef.current && avgOpen > OPEN_THRESHOLD) {
-    //   eyeWasClosedRef.current = false;
-    //   blinkCountRef.current += 1;
-    //   setBlinkCount(blinkCountRef.current);
-
-    //   if (blinkCountRef.current >= BLINKS_REQUIRED) {
-    //     isActiveRef.current = false;
-    //     if (detectTimerRef.current) clearTimeout(detectTimerRef.current); // detectTimer → detectTimerRef
-    //     setLivenessState(LivenessState.VERIFIED);
-    //   }
-    // }
-
-    // ── Blink phase ──────────────────────────────────────
+    // Blink phase
     if (blinkCountRef.current < BLINKS_REQUIRED) {
-    setLivenessState(LivenessState.FACE_DETECTED);
+      setLivenessState(LivenessState.FACE_DETECTED);
 
       if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {
         eyeWasClosedRef.current = true;
@@ -197,8 +141,8 @@ export default function useFaceLiveness() {
       return;
     }
 
-    // ── Smile phase (only runs after blinks complete) ────
-     console.log('smile phase — smilingProb:', smilingProb);
+    // Smile phase (only runs after blinks complete)
+    console.log("smile phase — smilingProb:", smilingProb);
     if (smilingProb > SMILE_THRESHOLD) {
       isActiveRef.current = false;
       if (detectTimerRef.current) clearTimeout(detectTimerRef.current);
@@ -207,17 +151,6 @@ export default function useFaceLiveness() {
       setLivenessState(LivenessState.SMILING);
     }
   }, []);
-
-  // ✅ Move blink logic to JS thread
-  const handleBlinkLogic = (avgOpen: number) => {
-    if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {
-      eyeWasClosedRef.current = true;
-      setLivenessState(LivenessState.BLINKING);
-    } else if (eyeWasClosedRef.current && avgOpen > OPEN_THRESHOLD) {
-      eyeWasClosedRef.current = false;
-      _incrementBlink();
-    }
-  };
 
   return {
     livenessState,

@@ -95,13 +95,79 @@ export default function LivenessButton({ livenessState, onPress }: Props) {
 // ✅ Typed config function
 function getConfig(state: LivenessState): ButtonConfig {
   switch (state) {
-    case LivenessState.VERIFIED:
+    case LivenessState.IDLE:
       return {
         colorIndex: 1,
         enabled: true,
         label: "Start Verification",
         showArrow: true,
         icon: null,
+        loading: false,
+        textColor: "#fff",
+      };
+
+    case LivenessState.DETECTING:
+      return {
+        colorIndex: 0,
+        enabled: false,
+        label: "Scanning face…",
+        showArrow: false,
+        icon: null,
+        loading: true,
+        textColor: Colors.gray500,
+      };
+
+    case LivenessState.FACE_DETECTED:
+      return {
+        colorIndex: 0,
+        enabled: false,
+        label: "Blink to continue",
+        showArrow: false,
+        icon: "eye-outline",
+        loading: false,
+        textColor: Colors.gray500,
+      };
+
+    case LivenessState.BLINKING:
+      return {
+        colorIndex: 0,
+        enabled: false,
+        label: "Verifying blink…",
+        showArrow: false,
+        icon: null,
+        loading: true,
+        textColor: Colors.gray500,
+      };
+
+    case LivenessState.VERIFIED_BLINK:
+      return {
+        colorIndex: 0,
+        enabled: false,
+        label: "Smile naturally",
+        showArrow: false,
+        icon: "happy-outline",
+        loading: false,
+        textColor: Colors.gray500,
+      };
+
+    case LivenessState.SMILING:
+      return {
+        colorIndex: 0,
+        enabled: false,
+        label: "Finalizing verification…",
+        showArrow: false,
+        icon: null,
+        loading: true,
+        textColor: Colors.gray500,
+      };
+
+    case LivenessState.VERIFIED:
+      return {
+        colorIndex: 1,
+        enabled: false,
+        label: "Verification Successful",
+        showArrow: false,
+        icon: "checkmark-circle",
         loading: false,
         textColor: "#fff",
       };
@@ -117,49 +183,15 @@ function getConfig(state: LivenessState): ButtonConfig {
         textColor: "#fff",
       };
 
-    case LivenessState.DETECTING:
-      return {
-        colorIndex: 0,
-        enabled: false,
-        label: "Scanning…",
-        showArrow: false,
-        icon: null,
-        loading: true,
-        textColor: Colors.gray400,
-      };
-
-    case LivenessState.BLINKING:
-      return {
-        colorIndex: 0,
-        enabled: false,
-        label: "Verifying blink…",
-        showArrow: false,
-        icon: null,
-        loading: true,
-        textColor: Colors.gray400,
-      };
-
-    case LivenessState.FACE_DETECTED:
-      return {
-        colorIndex: 0,
-        enabled: false,
-        label: "Blink to verify",
-        showArrow: false,
-        icon: null,
-        loading: false,
-        textColor: Colors.gray400,
-      };
-
-    case LivenessState.IDLE:
     default:
       return {
         colorIndex: 0,
         enabled: false,
-        label: "Start Verification",
-        showArrow: true,
+        label: "Preparing…",
+        showArrow: false,
         icon: null,
         loading: false,
-        textColor: Colors.gray400,
+        textColor: Colors.gray500,
       };
   }
 }

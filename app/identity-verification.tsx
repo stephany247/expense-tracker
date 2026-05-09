@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Alert,
@@ -20,7 +19,6 @@ import { useFaceDetector } from "react-native-vision-camera-face-detector";
 import BlinkPrompt from "@/components/security/BlinkPrompt";
 import FaceFrame from "@/components/security/FaceFrame";
 import LivenessButton from "@/components/security/LivenessButton";
-// import CameraPermissionGate from "@/components/security/CameraPermissionGate";
 import { Colors } from "@/constants/theme";
 import useFaceLiveness, { LivenessState } from "@/hooks/useFaceLiveness";
 import { router } from "expo-router";
@@ -46,7 +44,7 @@ export default function IdentityVerificationScreen() {
     isDetecting,
   } = useFaceLiveness();
 
-  // ── Camera setup ─────────────────────────
+  // Camera setup
   const device = useCameraDevice("front");
 
   const { detectFaces } = useFaceDetector({
@@ -71,7 +69,7 @@ export default function IdentityVerificationScreen() {
     return () => clearInterval(interval);
   }, [processFaces]);
 
-  // ── Frame processor ──────────────────────
+  // Frame processor
   const frameProcessor = useFrameProcessor(
     (frame) => {
       "worklet";
@@ -80,23 +78,6 @@ export default function IdentityVerificationScreen() {
     },
     [detectFaces],
   );
-
-  // ── Button logic ─────────────────────────
-  const handleButtonPress = useCallback(() => {
-    if (livenessState === LivenessState.VERIFIED) {
-      router.replace("/(tabs)");
-    } else if (livenessState === LivenessState.FAILED) {
-      if (attemptCount >= maxAttempts) {
-        Alert.alert(
-          "Too Many Attempts",
-          "Please try again later or contact support.",
-          [{ text: "OK", onPress: () => router.back() }],
-        );
-      } else {
-        reset();
-      }
-    }
-  }, [livenessState, attemptCount, maxAttempts, reset]);
 
   const requestPermissionAndStart = useCallback(async () => {
     if (hasPermission) {
@@ -122,17 +103,43 @@ export default function IdentityVerificationScreen() {
     }
   }, [hasPermission, startDetection]);
 
-  // ── Frame tap ────────────────────────────
-  const handleFramePress = useCallback(() => {
-    if (
-      livenessState === LivenessState.IDLE ||
-      livenessState === LivenessState.FAILED
-    ) {
-      requestPermissionAndStart();
+  const handleButtonPress = useCallback(async () => {
+    if (livenessState === LivenessState.IDLE) {
+      await requestPermissionAndStart();
+      return;
     }
-  }, [livenessState, requestPermissionAndStart]);
 
-  // ── Camera render ────────────────────────
+    if (livenessState === LivenessState.FAILED) {
+      if (attemptCount >= maxAttempts) {
+        Alert.alert(
+          "Too Many Attempts",
+          "Please try again later or contact support.",
+          [{ text: "OK" }],
+        );
+      } else {
+        reset();
+        await requestPermissionAndStart();
+      }
+    }
+  }, [
+    livenessState,
+    attemptCount,
+    maxAttempts,
+    reset,
+    requestPermissionAndStart,
+  ]);
+
+  useEffect(() => {
+    if (livenessState === LivenessState.VERIFIED) {
+      const timeout = setTimeout(() => {
+        router.replace("/(tabs)");
+      }, 1200);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [livenessState]);
+
+  // Camera render
   const cameraView = useMemo(() => {
     if (!device || !isDetecting || !hasPermission) return null;
 
@@ -147,7 +154,7 @@ export default function IdentityVerificationScreen() {
     );
   }, [device, isDetecting, frameProcessor, hasPermission]);
 
-  // ── Status chip ──────────────────────────
+  // Status chip
   const chipText = useMemo(() => {
     switch (livenessState) {
       case LivenessState.VERIFIED:
@@ -183,11 +190,6 @@ export default function IdentityVerificationScreen() {
   }, [livenessState]);
 
   return (
-    // <CameraPermissionGate>
-    // <LinearGradient
-    //   colors={["#E8EEFF", "#F4F6FF", "#F8F9FF"]}
-    //   style={[styles.root, { paddingTop: insets.top }]}
-    // >
     <View style={[styles.root, { paddingTop: insets.top }]}>
       {showPermissionGate ? (
         <CameraPermissionGate
@@ -237,12 +239,12 @@ export default function IdentityVerificationScreen() {
           </View>
 
           {/* Face frame */}
-          <Pressable onPress={handleFramePress} style={styles.framePressable}>
+          <View style={styles.framePressable}>
             <FaceFrame
               livenessState={livenessState}
               cameraComponent={cameraView}
             />
-          </Pressable>
+          </View>
 
           {/* Blink prompt */}
           <BlinkPrompt
@@ -271,8 +273,6 @@ export default function IdentityVerificationScreen() {
         </ScrollView>
       )}
     </View>
-    // </LinearGradient>
-    // </CameraPermissionGate>
   );
 }
 
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
 
-  // ── Icon ──────────────────────────────────────────────────────────────────
+  // Icon
   iconWrap: {
     width: 56,
     height: 56,
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  // ── Title ─────────────────────────────────────────────────────────────────
+  // Title
   title: {
     fontSize: 28,
     fontWeight: "800",
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  // ── Status chip ───────────────────────────────────────────────────────────
+  // Status chip
   chip: {
     flexDirection: "row",
     alignItems: "center",
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   chipTextVerified: { color: Colors.success },
   chipTextFailed: { color: Colors.danger },
 
-  // ── Frame press area ──────────────────────────────────────────────────────
+  // ── Frame press area
   framePressable: {
     alignItems: "center",
     width: "100%",
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     color: Colors.gray400,
   },
 
-  // ── Blink progress dots ───────────────────────────────────────────────────
+  // ── Blink progress dots
   blinkDots: {
     flexDirection: "row",
     gap: 10,
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.blue,
   },
 
-  // ── Encryption badge ──────────────────────────────────────────────────────
+  // ── Encryption badge
   encryptedBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  // ── Bottom section ────────────────────────────────────────────────────────
+  // ── Bottom section
   btnWrap: {
     width: "100%",
     gap: 0,
