@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from "react";
-import { runOnJS } from "react-native-reanimated";
 
 // Proper enum (better than plain object)
 export enum LivenessState {
@@ -7,6 +6,8 @@ export enum LivenessState {
   DETECTING = "DETECTING",
   FACE_DETECTED = "FACE_DETECTED",
   BLINKING = "BLINKING",
+  VERIFIED_BLINK = "VERIFIED_BLINK",
+  SMILING = "SMILING",
   VERIFIED = "VERIFIED",
   FAILED = "FAILED",
 }
@@ -32,6 +33,7 @@ type Face = {
 const BLINK_THRESHOLD = 0.25;
 const OPEN_THRESHOLD = 0.65;
 const BLINKS_REQUIRED = 2;
+const SMILE_THRESHOLD = 0.7;
 const MAX_ATTEMPTS = 3;
 const DETECT_TIMEOUT_MS = 15000;
 
@@ -44,17 +46,10 @@ export default function useFaceLiveness() {
   const [faceBox, setFaceBox] = useState<FaceBox | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // ✅ FIX: useRef (JS thread)
   const eyeWasClosedRef = useRef<boolean>(false);
   const blinkCountRef = useRef<number>(0);
   const detectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isActiveRef = useRef<boolean>(false);
-
-  // ── Safe setters ─────────────────────────
-  const _setStateSafe = useCallback(
-    (s: LivenessState) => setLivenessState(s),
-    [],
-  );
 
   const _incrementBlink = useCallback(() => {
     blinkCountRef.current += 1;
@@ -146,31 +141,72 @@ export default function useFaceLiveness() {
   //   [_setStateSafe],
   // );
 
-const processFaces = useCallback((faces: any[]) => {
-  if (!isActiveRef.current || !faces || faces.length === 0) return;  // isActive → isActiveRef
+  const processFaces = useCallback((faces: any[]) => {
+    if (!isActiveRef.current || !faces || faces.length === 0) return; // isActive → isActiveRef
 
-  const face = faces[0];
-  setLivenessState(LivenessState.FACE_DETECTED);
+    const face = faces[0];
 
-  const leftOpen = face.leftEyeOpenProbability ?? 1;
-  const rightOpen = face.rightEyeOpenProbability ?? 1;
-  const avgOpen = (leftOpen + rightOpen) / 2;
+    const leftOpen = face.leftEyeOpenProbability ?? 1;
+    const rightOpen = face.rightEyeOpenProbability ?? 1;
+    const avgOpen = (leftOpen + rightOpen) / 2;
+    const smilingProb = face.smilingProbability ?? 0;
+    console.log(
+      "full face data:",
+      JSON.stringify({
+        smile: face.smilingProbability,
+        leftEye: face.leftEyeOpenProbability,
+        rightEye: face.rightEyeOpenProbability,
+        hasContours: !!face.contours,
+        hasBounds: !!face.bounds,
+      }),
+    );
 
-  if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {  // eyeWasClosed → eyeWasClosedRef
-    eyeWasClosedRef.current = true;
-    setLivenessState(LivenessState.BLINKING);
-  } else if (eyeWasClosedRef.current && avgOpen > OPEN_THRESHOLD) {
-    eyeWasClosedRef.current = false;
-    blinkCountRef.current += 1;
-    setBlinkCount(blinkCountRef.current);
+    // if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {
+    //   // eyeWasClosed → eyeWasClosedRef
+    //   eyeWasClosedRef.current = true;
+    //   setLivenessState(LivenessState.BLINKING);
+    // } else if (eyeWasClosedRef.current && avgOpen > OPEN_THRESHOLD) {
+    //   eyeWasClosedRef.current = false;
+    //   blinkCountRef.current += 1;
+    //   setBlinkCount(blinkCountRef.current);
 
-    if (blinkCountRef.current >= BLINKS_REQUIRED) {
-      isActiveRef.current = false;
-      if (detectTimerRef.current) clearTimeout(detectTimerRef.current);  // detectTimer → detectTimerRef
-      setLivenessState(LivenessState.VERIFIED);
+    //   if (blinkCountRef.current >= BLINKS_REQUIRED) {
+    //     isActiveRef.current = false;
+    //     if (detectTimerRef.current) clearTimeout(detectTimerRef.current); // detectTimer → detectTimerRef
+    //     setLivenessState(LivenessState.VERIFIED);
+    //   }
+    // }
+
+    // ── Blink phase ──────────────────────────────────────
+    if (blinkCountRef.current < BLINKS_REQUIRED) {
+    setLivenessState(LivenessState.FACE_DETECTED);
+
+      if (!eyeWasClosedRef.current && avgOpen < BLINK_THRESHOLD) {
+        eyeWasClosedRef.current = true;
+        setLivenessState(LivenessState.BLINKING);
+      } else if (eyeWasClosedRef.current && avgOpen > OPEN_THRESHOLD) {
+        eyeWasClosedRef.current = false;
+        blinkCountRef.current += 1;
+        setBlinkCount(blinkCountRef.current);
+
+        if (blinkCountRef.current >= BLINKS_REQUIRED) {
+          // Blinks done — move to smile phase
+          setLivenessState(LivenessState.VERIFIED_BLINK);
+        }
+      }
+      return;
     }
-  }
-}, []);
+
+    // ── Smile phase (only runs after blinks complete) ────
+     console.log('smile phase — smilingProb:', smilingProb);
+    if (smilingProb > SMILE_THRESHOLD) {
+      isActiveRef.current = false;
+      if (detectTimerRef.current) clearTimeout(detectTimerRef.current);
+      setLivenessState(LivenessState.VERIFIED);
+    } else {
+      setLivenessState(LivenessState.SMILING);
+    }
+  }, []);
 
   // ✅ Move blink logic to JS thread
   const handleBlinkLogic = (avgOpen: number) => {
@@ -198,6 +234,8 @@ const processFaces = useCallback((faces: any[]) => {
     isDetecting:
       livenessState === LivenessState.DETECTING ||
       livenessState === LivenessState.FACE_DETECTED ||
-      livenessState === LivenessState.BLINKING,
+      livenessState === LivenessState.BLINKING ||
+      livenessState === LivenessState.VERIFIED_BLINK ||
+      livenessState === LivenessState.SMILING,
   };
 }

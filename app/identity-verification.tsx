@@ -50,8 +50,12 @@ export default function IdentityVerificationScreen() {
   const device = useCameraDevice("front");
 
   const { detectFaces } = useFaceDetector({
-    performanceMode: "fast",
+    performanceMode: "accurate",
+    classificationMode: "all",
+    cameraFacing: "front",
     trackingEnabled: true,
+    windowWidth: 480,
+    windowHeight: 640,
   });
 
   const detectedFaces = useSharedValue<any[]>([]);
@@ -152,8 +156,13 @@ export default function IdentityVerificationScreen() {
         return errorMessage || "Verification failed";
       case LivenessState.DETECTING:
         return "Searching for face…";
-      case LivenessState.FACE_DETECTED:
       case LivenessState.BLINKING:
+        return `Blink ${blinkCount}/${blinkCountRequired} detected`;
+      case LivenessState.VERIFIED_BLINK:
+        return "✓ Blinks confirmed — now smile!";
+      case LivenessState.SMILING:
+        return "Hold that smile…";
+      case LivenessState.FACE_DETECTED:
         return `Blink ${blinkCount}/${blinkCountRequired} detected`;
       default:
         return "Center your face in the frame";

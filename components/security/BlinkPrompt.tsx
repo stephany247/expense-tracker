@@ -8,10 +8,8 @@ type Props = {
   blinkCountRequired: number;
 };
 
-/**
- * Slides in from below and sits between the frame and the bottom buttons.
- * Only visible in FACE_DETECTED and BLINKING states.
- */
+// Slides in from below and sits between the frame and the bottom buttons.
+// Only visible in FACE_DETECTED and BLINKING states.
 export default function BlinkPrompt({
   livenessState,
   blinkCount,
@@ -23,7 +21,9 @@ export default function BlinkPrompt({
 
   const visible =
     livenessState === LivenessState.FACE_DETECTED ||
-    livenessState === LivenessState.BLINKING;
+    livenessState === LivenessState.BLINKING ||
+    livenessState === LivenessState.VERIFIED_BLINK ||
+    livenessState === LivenessState.SMILING;
 
   useEffect(() => {
     if (visible) {
@@ -66,16 +66,25 @@ export default function BlinkPrompt({
   const remaining = blinkCountRequired - blinkCount;
 
   const label =
-    livenessState === LivenessState.BLINKING
-      ? "Blink detected… keep going"
-      : remaining === blinkCountRequired
-        ? "Blink Twice If you're safe"
-        : `${remaining} more blink${remaining !== 1 ? "s" : ""} to go`;
+    livenessState === LivenessState.VERIFIED_BLINK ||
+    livenessState === LivenessState.SMILING
+      ? "😁 Now give us a big smile!"
+      : livenessState === LivenessState.BLINKING
+        ? "Blink detected… keep going"
+        : remaining === blinkCountRequired
+          ? "Blink Twice If you're safe"
+          : `${remaining} more blink${remaining !== 1 ? "s" : ""} to go`;
 
+  const bgColor =
+    livenessState === LivenessState.VERIFIED_BLINK ||
+    livenessState === LivenessState.SMILING
+      ? "#E8F5E9"
+      : "#FFF3CD";
   return (
     <Animated.View
       style={[
         styles.container,
+        { backgroundColor: bgColor },
         {
           opacity,
           transform: [{ translateY }, { scale }],
