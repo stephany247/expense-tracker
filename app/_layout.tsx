@@ -1,13 +1,10 @@
+import "react-native-worklets-core";
 import { Colors } from "@/constants/theme";
 import { useAppStore } from "@/utils/storage";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
-export const unstable_settings = {
-  anchor: "(tabs)",
-};
 
 export default function RootLayout() {
   const init = useAppStore((s) => s.init);
@@ -22,6 +19,10 @@ export default function RootLayout() {
       <StatusBar style="auto" />
 
       <Stack>
+        <Stack.Screen
+          name="identity-verification"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="add-transaction"

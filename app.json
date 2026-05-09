@@ -40,7 +40,23 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-web-browser",
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "We need camera access for identity verification."
+        }
+      ],
+      // ["react-native-worklets-core/plugin"],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
