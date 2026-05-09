@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
+  Animated,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -19,16 +20,20 @@ import { useFaceDetector } from "react-native-vision-camera-face-detector";
 import BlinkPrompt from "@/components/security/BlinkPrompt";
 import FaceFrame from "@/components/security/FaceFrame";
 import LivenessButton from "@/components/security/LivenessButton";
-import { Colors } from "@/constants/theme";
+import { Colors, Radii } from "@/constants/theme";
 import useFaceLiveness, { LivenessState } from "@/hooks/useFaceLiveness";
 import { router } from "expo-router";
 import CameraPermissionGate from "@/components/security/CameraPermissionGate";
 import { useSharedValue } from "react-native-worklets-core";
+import { Easing } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function IdentityVerificationScreen() {
   const insets = useSafeAreaInsets();
   const [hasPermission, setHasPermission] = useState(false);
   const [showPermissionGate, setShowPermissionGate] = useState(false);
+  const [showSuccessScreen, setShowSuccessScreen] = useState(false);
 
   const {
     livenessState,
@@ -129,16 +134,26 @@ export default function IdentityVerificationScreen() {
     requestPermissionAndStart,
   ]);
 
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     if (livenessState === LivenessState.VERIFIED) {
+      setShowSuccessScreen(true);
+
+      Animated.timing(progressAnim, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start();
+
       const timeout = setTimeout(() => {
         router.replace("/(tabs)");
-      }, 1200);
+      }, 3000);
 
       return () => clearTimeout(timeout);
     }
   }, [livenessState]);
-
   // Camera render
   const cameraView = useMemo(() => {
     if (!device || !isDetecting || !hasPermission) return null;
@@ -189,6 +204,56 @@ export default function IdentityVerificationScreen() {
     return styles.chipTextDefault;
   }, [livenessState]);
 
+  if (showSuccessScreen) {
+    return (
+      <View style={styles.successRoot}>
+        <View style={styles.successCard}>
+          <View style={styles.successIconWrap}>
+            <Ionicons
+              name="checkmark-circle-sharp"
+              size={48}
+              color={Colors.navy}
+            />
+          </View>
+
+          <Text style={styles.successTitle}>Verification Successful</Text>
+
+          <Text style={styles.successSubtitle}>
+            Connecting to your account securely...
+          </Text>
+
+          <View style={styles.progressTrack}>
+            <Animated.View
+              style={[
+                styles.progressFill,
+                {
+                  width: progressAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ["0%", "100%"],
+                  }),
+                },
+              ]}
+            />
+          </View>
+
+          <Pressable
+            style={styles.successBtn}
+            onPress={() => router.replace("/(tabs)")}
+          >
+            <Text style={styles.successBtnText}>Go to Dashboard </Text>
+            <AntDesign name="arrow-right" size={16} color={Colors.textWhite} />
+          </Pressable>
+        </View>
+
+        <View style={styles.secureRow}>
+          <Ionicons name="lock-closed" size={14} color={Colors.gray500} />
+          <Text style={styles.secureText}>
+            Secured by Enterprise Grade Encryption
+          </Text>
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       {showPermissionGate ? (
@@ -400,5 +465,104 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: Colors.blue,
+  },
+
+  successRoot: {
+    flex: 1,
+    backgroundColor: "#F4F5FB",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+
+  successCard: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: Radii.xl,
+    paddingHorizontal: 28,
+    paddingVertical: 40,
+    alignItems: "center",
+    borderTopWidth: 4,
+    borderTopColor: Colors.blue,
+  },
+
+  successIconWrap: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: "#DCE7FF",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 28,
+  },
+
+  successIconInner: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#082B63",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  successTitle: {
+    fontSize: 36,
+    fontWeight: "600",
+    textAlign: "center",
+    lineHeight: 42,
+    marginBottom: 16,
+  },
+
+  successSubtitle: {
+    fontSize: 18,
+    lineHeight: 28,
+    textAlign: "center",
+    color: Colors.gray500,
+    marginBottom: 20,
+  },
+
+  progressTrack: {
+    width: 200,
+    height: 8,
+    borderRadius: 999,
+    backgroundColor: "#D9E1FF",
+    overflow: "hidden",
+    marginBottom: 36,
+  },
+
+  progressFill: {
+    height: "100%",
+    backgroundColor: Colors.blue,
+    borderRadius: 999,
+  },
+
+  successBtn: {
+    width: "100%",
+    backgroundColor: Colors.blue,
+    borderRadius: Radii.sm,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 6,
+  },
+
+  successBtnText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+
+  secureRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 36,
+    gap: 6,
+  },
+
+  secureText: {
+    fontSize: 13,
+    color: Colors.gray500,
+    fontWeight: "500",
   },
 });
