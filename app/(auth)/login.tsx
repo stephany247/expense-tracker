@@ -33,7 +33,7 @@ export default function LoginScreen() {
       return;
     }
 
-    router.replace("/(auth)/identity-verification");
+    router.push("/(auth)/identity-verification");
   };
 
   return (

@@ -65,7 +65,7 @@ export default function SignupScreen() {
       "Your account has been created successfully.",
     );
 
-    router.replace("/(auth)/identity-verification");
+    router.push("/(auth)/identity-verification");
   };
   return (
     <SafeAreaView style={styles.container}>
