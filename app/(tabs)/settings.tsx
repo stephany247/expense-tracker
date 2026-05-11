@@ -10,9 +10,16 @@ import {
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography, Radii } from "@/constants/theme";
 import { useState } from "react";
+import { router } from "expo-router";
+import { useAuthStore } from "@/utils/auth-store";
 
 export default function SettingsScreen() {
   const [isBiometricEnabled, setIsBiometricEnabled] = useState(true);
+  const { user } = useAuthStore();
+
+  const passwordDate = user?.passwordUpdatedAt
+    ? new Date(user.passwordUpdatedAt).toLocaleDateString()
+    : "Unknown";
 
   return (
     <View style={styles.safeArea}>
@@ -125,7 +132,10 @@ export default function SettingsScreen() {
             />
           </View>
 
-          <Pressable style={styles.settingItem}>
+          <Pressable
+            style={styles.settingItem}
+            onPress={() => router.push("/(auth)/update-password")}
+          >
             <View style={styles.settingLeft}>
               <View style={styles.settingIcon}>
                 <MaterialCommunityIcons
@@ -137,8 +147,9 @@ export default function SettingsScreen() {
 
               <View>
                 <Text style={styles.settingTitle}>User Password</Text>
+
                 <Text style={styles.settingSubtitle}>
-                  Last updated 5 days ago
+                  Last updated {passwordDate}
                 </Text>
               </View>
             </View>

@@ -6,6 +6,7 @@ type User = {
   fullName: string;
   email: string;
   password: string;
+  passwordUpdatedAt?: string;
 };
 
 type AuthStore = {
@@ -26,7 +27,10 @@ export const useAuthStore = create<AuthStore>()(
 
       signup: (data) =>
         set({
-          user: data,
+          user: {
+            ...data,
+            passwordUpdatedAt: new Date().toISOString(),
+          },
           isLoggedIn: true,
         }),
 
@@ -52,6 +56,7 @@ export const useAuthStore = create<AuthStore>()(
             ? {
                 ...state.user,
                 password,
+                passwordUpdatedAt: new Date().toISOString(),
               }
             : null,
         })),
