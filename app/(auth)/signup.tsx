@@ -6,12 +6,16 @@ import {
   View,
   Pressable,
   ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "@/utils/auth-store";
 import { Colors, Spacing, Typography, Radii } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -20,98 +24,153 @@ export default function SignupScreen() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = () => {
+    if (!fullName.trim()) {
+      Alert.alert("Missing Name", "Please enter your full name.");
+      return;
+    }
+
+    if (!email.trim()) {
+      Alert.alert("Missing Email", "Please enter your email address.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email.");
+      return;
+    }
+
+    if (!password.trim()) {
+      Alert.alert("Missing Password", "Please enter a password.");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Weak Password", "Password must be at least 6 characters.");
+      return;
+    }
+
     signup({
       fullName,
       email,
       password,
     });
 
-    router.replace("/(tabs)");
-  };
+    Alert.alert(
+      "Account Created",
+      "Your account has been created successfully.",
+    );
 
+    router.replace("/(auth)/identity-verification");
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.content}>
-        <Text style={styles.title}>Create an Account</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={20}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: 40,
+            padding: 24,
+            marginTop: 60,
+          }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.title}>Create an Account</Text>
 
-        <Text style={styles.subtitle}>Secure your financial data today.</Text>
+          <Text style={styles.subtitle}>Secure your financial data today.</Text>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Full Name</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Full Name</Text>
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="person-outline"
-              size={20}
-              color={Colors.textPrimary}
-            />
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name="person-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
 
-            <TextInput
-              placeholder="John Doe"
-              value={fullName}
-              onChangeText={setFullName}
-              style={styles.input}
-              placeholderTextColor={Colors.textTertiary}
-            />
+              <TextInput
+                placeholder="John Doe"
+                value={fullName}
+                onChangeText={setFullName}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+            </View>
           </View>
-        </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email Address</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email Address</Text>
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color={Colors.textPrimary}
-            />
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
 
-            <TextInput
-              placeholder="john@company.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-              style={styles.input}
-              placeholderTextColor={Colors.textTertiary}
-            />
+              <TextInput
+                placeholder="john@company.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+            </View>
           </View>
-        </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Password</Text>
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={Colors.textPrimary}
-            />
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
 
-            <TextInput
-              placeholder="••••••••"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
-              placeholderTextColor={Colors.textTertiary}
-            />
+              <TextInput
+                placeholder="••••••••"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+
+              <Pressable onPress={() => setShowPassword((prev) => !prev)}>
+                <Ionicons
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={Colors.textPrimary}
+                />
+              </Pressable>
+            </View>
           </View>
-        </View>
 
-        <Pressable style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-          <Feather name="arrow-right" size={16} color={Colors.textWhite} />
-        </Pressable>
+          <Button title="Sign Up" onPress={handleSignup} />
 
-        <Pressable onPress={() => router.push("/login")}>
-          <Text style={styles.footerText}>
-            Already have an account? <Text style={styles.link}>Log In</Text>
-          </Text>
-        </Pressable>
-      </ScrollView>
+          <Pressable onPress={() => router.push("/login")}>
+            <Text style={styles.footerText}>
+              Already have an account? <Text style={styles.link}>Log In</Text>
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -135,11 +194,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     color: Colors.navy,
-  },
-
-  content: {
-    padding: 24,
-    marginTop: 80,
   },
 
   title: {
@@ -183,23 +237,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 18,
-  },
-
-  button: {
-    padding: 12,
-    backgroundColor: "#1457D9",
-    borderRadius: 18,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 20,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: Typography.lg,
-    fontWeight: Typography.semibold,
+    color: Colors.textBlack,
   },
 
   footerText: {

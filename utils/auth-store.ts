@@ -33,10 +33,7 @@ export const useAuthStore = create<AuthStore>()(
       login: (email, password) => {
         const user = get().user;
 
-        if (
-          user?.email === email &&
-          user?.password === password
-        ) {
+        if (user?.email === email && user?.password === password) {
           set({ isLoggedIn: true });
           return true;
         }
@@ -62,6 +59,10 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "auth-storage",
       storage: createJSONStorage(() => AsyncStorage),
+
+      partialize: (state) => ({
+        user: state.user,
+      }),
     },
   ),
 );
