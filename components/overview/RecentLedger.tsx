@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
@@ -7,8 +6,7 @@ import { ComponentProps } from "react";
 import { Transaction } from "@/utils/storage";
 import { LedgerItem } from "./LedgerItem";
 import { useRouter } from "expo-router";
-import { CTA } from "./CTA";
-type IconName = ComponentProps<typeof Ionicons>["name"];
+import { IconName } from "./AllocationCard";
 
 type Props = {
   transactions: Transaction[];
@@ -28,18 +26,37 @@ function RecentLedger({ transactions }: Props) {
     <View style={styles.container}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Recent Ledger</Text>
-        <Pressable onPress={() => router.navigate("/recent-ledgers")}>
-          <Text style={styles.link}>VIEW ALL</Text>
-        </Pressable>
+
+        {transactions.length > 0 && (
+          <Pressable onPress={() => router.navigate("/recent-ledgers")}>
+            <Text style={styles.link}>VIEW ALL</Text>
+          </Pressable>
+        )}
       </View>
 
-      {transactions.slice(0, 8).map((item) => (
-        <LedgerItem
-          key={item.id}
-          item={item}
-          icon={getIcon(item.category) as IconName}
-        />
-      ))}
+      {transactions.length === 0 ? (
+        <View style={styles.cta}>
+          <View style={styles.ctaIcon}>
+            <Ionicons name="receipt-outline" size={28} color={Colors.navy} />
+          </View>
+
+          <Text style={styles.ctaTitle}>No transactions yet</Text>
+
+          <Text style={styles.ctaSub}>
+            Your recent income and expenses will appear here.
+          </Text>
+        </View>
+      ) : (
+        transactions
+          .slice(0, 8)
+          .map((item) => (
+            <LedgerItem
+              key={item.id}
+              item={item}
+              icon={getIcon(item.category) as IconName}
+            />
+          ))
+      )}
     </View>
   );
 }
@@ -134,7 +151,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: Radii["2xl"],
     alignItems: "center",
-    marginTop: 20,
+    marginBottom: 20,
   },
 
   ctaIcon: {
