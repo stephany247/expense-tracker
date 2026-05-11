@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   StyleSheet,
@@ -7,12 +6,16 @@ import {
   View,
   Pressable,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "@/utils/auth-store";
-import { Colors } from "@/constants/theme";
+import { Colors, Typography } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -20,6 +23,7 @@ export default function LoginScreen() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     const success = login(email, password);
@@ -29,73 +33,94 @@ export default function LoginScreen() {
       return;
     }
 
-    router.replace("/(tabs)");
+    router.replace("/(auth)/identity-verification");
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Welcome Back</Text>
-
-        <Text style={styles.subtitle}>
-          Login to continue managing your finances.
-        </Text>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email Address</Text>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color="#8A8A8A"
-            />
-
-            <TextInput
-              placeholder="john@company.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-              style={styles.input}
-            />
-          </View>
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Password</Text>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color="#8A8A8A"
-            />
-
-            <TextInput
-              placeholder="••••••••"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
-            />
-          </View>
-        </View>
-
-        <Pressable
-          style={styles.button}
-          onPress={handleLogin}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={20}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: 40,
+            padding: 24,
+            marginTop: 60,
+          }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.buttonText}>Log In →</Text>
-        </Pressable>
+          <Text style={styles.title}>Welcome Back</Text>
 
-        <Pressable onPress={() => router.push("/signup")}>
-          <Text style={styles.footerText}>
-            Don’t have an account?{" "}
-            <Text style={styles.link}>Sign Up</Text>
+          <Text style={styles.subtitle}>
+            Login to continue managing your finances.
           </Text>
-        </Pressable>
-      </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Email Address</Text>
+
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name="mail-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
+
+              <TextInput
+                placeholder="john@company.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                value={email}
+                onChangeText={setEmail}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Password</Text>
+
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={20}
+                color={Colors.textPrimary}
+              />
+
+              <TextInput
+                placeholder="••••••••"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+
+              <Pressable onPress={() => setShowPassword((prev) => !prev)}>
+                <Ionicons
+                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color={Colors.textPrimary}
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          <Button title="Log In" onPress={handleLogin} />
+
+          <Pressable onPress={() => router.push("/signup")}>
+            <Text style={styles.footerText}>
+              Don’t have an account? <Text style={styles.link}>Sign Up</Text>
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -103,26 +128,21 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F7FB",
-  },
-
-  content: {
-    padding: 24,
-    marginTop: 140,
+    backgroundColor: Colors.blueBg,
   },
 
   title: {
-    fontSize: 42,
-    fontWeight: "700",
+    fontSize: Typography["5xl"],
+    fontWeight: Typography.bold,
     textAlign: "center",
     color: "#0F172A",
     marginBottom: 10,
   },
 
   subtitle: {
-    fontSize: 18,
+    fontSize: Typography.lg,
     textAlign: "center",
-    color: "#5B5B5B",
+    color: Colors.textPrimary,
     marginBottom: 50,
   },
 
@@ -131,10 +151,10 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 10,
-    color: "#1F2937",
+    fontSize: Typography.base,
+    fontWeight: Typography.semibold,
+    marginBottom: 6,
+    color: Colors.gray800,
   },
 
   inputWrapper: {
@@ -145,28 +165,14 @@ const styles = StyleSheet.create({
     borderColor: "#D0D5DD",
     borderRadius: 18,
     paddingHorizontal: 16,
-    height: 64,
+    height: 50,
     gap: 12,
   },
 
   input: {
     flex: 1,
     fontSize: 18,
-  },
-
-  button: {
-    height: 62,
-    backgroundColor: "#1457D9",
-    borderRadius: 18,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "700",
+    color: Colors.textBlack,
   },
 
   footerText: {

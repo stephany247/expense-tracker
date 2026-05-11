@@ -190,12 +190,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
 
-  logoText: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: Colors.navy,
-  },
-
   title: {
     fontSize: Typography["5xl"],
     fontWeight: Typography.bold,

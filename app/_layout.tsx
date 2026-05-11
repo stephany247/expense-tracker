@@ -19,10 +19,6 @@ export default function RootLayout() {
       <StatusBar style="auto" />
 
       <Stack>
-        <Stack.Screen
-          name="identity-verification"
-          options={{ headerShown: false }}
-        />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen
