@@ -1,71 +1,123 @@
 import { Colors, Radii, Typography } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
-import { useCallback, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  useCallback,
+  useState,
+} from "react";
+
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+
 import { ComponentProps } from "react";
+
 import { CategoryItem } from "./CategoryItem";
-import { Category, useAppStore } from "@/utils/storage";
-type IconName = ComponentProps<typeof Ionicons>["name"];
+
+import {
+  Category,
+  useAppStore,
+} from "@/utils/storage";
+
+type IconName =
+  ComponentProps<
+    typeof Ionicons
+  >["name"];
 
 export const CategoryScroll = () => {
   const router = useRouter();
+
   const { categories } = useAppStore();
 
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
+  const [
+    selectedCategory,
+    setSelectedCategory,
+  ] = useState<Category | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      if (categories.length > 0 && !selectedCategory) {
+      if (
+        categories.length > 0 &&
+        !selectedCategory
+      ) {
         setSelectedCategory(categories[0]);
       }
     }, [categories, selectedCategory]),
   );
+
   return (
     <View style={styles.scrollContainer}>
-      <Text style={styles.header}>CATEGORY</Text>
+      <Text style={styles.header}>
+        CATEGORY
+      </Text>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {categories.map((item: Category, i) => {
-          const isActive = selectedCategory?.id === item.id;
-          const isNew = item.name === "New";
-
-          if (isNew) {
-            return (
-              <Pressable
-                key={i}
-                style={styles.newCat}
-                onPress={() => router.push("/add-category")}
-              >
-                <Ionicons name="add" size={28} color={Colors.textBlack} />
-                <Text style={styles.newText}>New</Text>
-              </Pressable>
-            );
-          }
+      <FlatList
+        horizontal
+        data={categories}
+        keyExtractor={(item) =>
+          item.id.toString()
+        }
+        showsHorizontalScrollIndicator={
+          false
+        }
+        contentContainerStyle={{
+          paddingRight: 10,
+        }}
+        renderItem={({ item }) => {
+          const isActive =
+            selectedCategory?.id === item.id;
 
           return (
             <CategoryItem
-              key={i}
               name={item.name}
-              icon={item.icon as IconName}
+              icon={
+                item.icon as IconName
+              }
               isActive={isActive}
               onPress={() => {
                 setSelectedCategory(item);
 
                 router.push({
-                  pathname: "/add-transaction",
+                  pathname:
+                    "/add-transaction",
+
                   params: {
-                    categoryId: item.id.toString(),
-                    categoryName: item.name,
+                    categoryId:
+                      item.id.toString(),
+
+                    categoryName:
+                      item.name,
                   },
                 });
               }}
             />
           );
-        })}
-      </ScrollView>
+        }}
+        ListFooterComponent={
+          <Pressable
+            style={styles.newCat}
+            onPress={() =>
+              router.push(
+                "/add-category",
+              )
+            }
+          >
+            <Ionicons
+              name="add"
+              size={28}
+              color={Colors.textBlack}
+            />
+
+            <Text style={styles.newText}>
+              New
+            </Text>
+          </Pressable>
+        }
+      />
     </View>
   );
 };
@@ -89,7 +141,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 34,
     borderRadius: 16,
     backgroundColor: "#B7C3D9",
-    marginRight: 10,
+    marginLeft: 10,
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
@@ -97,6 +149,6 @@ const styles = StyleSheet.create({
 
   newText: {
     color: Colors.textBlack,
-    fontWeight: Typography.bold,
+    fontWeight: Typography.semibold,
   },
 });

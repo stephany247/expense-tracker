@@ -10,7 +10,7 @@ export const AddCategoryButton = () => {
       style={styles.addBtn}
       onPress={() => {
         router.push({
-          pathname: "/add-transaction",
+          pathname: "/add-category",
         });
       }}
     >
