@@ -7,7 +7,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { useEffect, useState } from "react";
 import {
   Allocation,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
 
   tabText: {
-    fontWeight: Typography.medium,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.textPrimary,
   },
 

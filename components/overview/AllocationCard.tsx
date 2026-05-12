@@ -1,4 +1,4 @@
-import { Colors, Radii } from "@/constants/theme";
+import { Colors, Fonts, Radii } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { ComponentProps } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -83,22 +83,23 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 12,
-    color: Colors.textSecondary,
+    fontSize: 14,
+    fontFamily: Fonts.manrope.bold,
+    color: Colors.textBlack,
   },
 
   amount: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 18,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.navy,
-    marginVertical: 4,
+    marginVertical: 2,
   },
 
   bar: {
     height: 6,
     backgroundColor: "#E5E7EB",
     borderRadius: 3,
-    marginTop: 4,
+    marginTop: 8,
   },
 
   fill: {
@@ -108,6 +109,7 @@ const styles = StyleSheet.create({
 
   left: {
     fontSize: 10,
+    fontFamily: Fonts.inter.bold,
     marginTop: 4,
     color: Colors.textSecondary,
   },

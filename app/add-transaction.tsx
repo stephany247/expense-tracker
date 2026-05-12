@@ -3,7 +3,7 @@ import { AmountInput } from "@/components/inputs/AmountInput";
 import { DateInput } from "@/components/inputs/DateInput";
 import { NameInput } from "@/components/inputs/NameInput";
 import { NotesInput } from "@/components/inputs/NotesInput";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { formatAmount } from "@/utils/format";
 import { Transaction, useAppStore } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -132,6 +132,7 @@ export default function AddTransaction() {
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Category"
+                  placeholderTextColor={Colors.gray600}
                   value={category}
                   editable={false}
                   style={styles.input}
@@ -210,7 +211,12 @@ export default function AddTransaction() {
                         setShowTypeDropdown(false);
                       }}
                     >
-                      <Text style={{ textTransform: "capitalize" }}>
+                      <Text
+                        style={{
+                          textTransform: "capitalize",
+                          fontFamily: Fonts.inter.semibold,
+                        }}
+                      >
                         {item}
                       </Text>
                     </TouchableOpacity>
@@ -283,7 +289,7 @@ const styles = StyleSheet.create({
 
   tabText: {
     fontSize: 14,
-    fontWeight: Typography.medium,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.textPrimary,
   },
 

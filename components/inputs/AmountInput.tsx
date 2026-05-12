@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   dollar: {
     position: "absolute",
     left: 4,
-    bottom: 12,
+    bottom: 24,
     fontSize: Typography["6xl"],
     color: Colors.textTertiary,
   },
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingLeft: 30,
     fontSize: 72,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.extrabold,
     color: Colors.navy,
   },
   badge: {
@@ -65,5 +65,5 @@ const styles = StyleSheet.create({
     borderTopRightRadius: Radii["2xl"],
     borderBottomLeftRadius: Radii["2xl"],
   },
-  badgeText: { color: "#fff" },
+  badgeText: { color: "#fff", fontFamily: Fonts.inter.bold },
 });

@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 import React from "react";
 
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors, Radii } from "@/constants/theme";
+import { Colors, Fonts, Radii } from "@/constants/theme";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
@@ -22,6 +22,9 @@ export default function TabLayout() {
           paddingTop: 8,
         },
         headerTitle: () => <Header />,
+        tabBarLabelStyle: {
+          fontFamily: Fonts.inter.medium,
+        },
       }}
     >
       <Tabs.Screen

@@ -1,4 +1,4 @@
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
@@ -53,12 +53,13 @@ const styles = StyleSheet.create({
 
   ctaTitle: {
     fontSize: Typography.xl,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.bold,
     marginTop: 10,
   },
 
   ctaSub: {
     fontSize: Typography.base,
+    fontFamily: Fonts.inter.bold,
     color: Colors.textSecondary,
     marginBottom: 20,
   },
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+    fontFamily: Fonts.manrope.bold,
   },
 
   button: {

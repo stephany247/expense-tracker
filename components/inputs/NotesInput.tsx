@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: Typography.semibold,
+    fontFamily: Fonts.inter.semibold,
     color: Colors.textSecondary,
     marginBottom: 5,
   },
@@ -41,5 +41,6 @@ const styles = StyleSheet.create({
     padding: 12,
     height: 100,
     textAlignVertical: "top",
+    fontFamily: Fonts.inter.medium,
   },
 });

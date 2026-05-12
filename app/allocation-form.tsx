@@ -7,7 +7,7 @@ import {
   Switch,
   Alert,
 } from "react-native";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { AmountInput } from "@/components/inputs/AmountInput";
@@ -252,12 +252,12 @@ const styles = StyleSheet.create({
 
   toggleText: {
     fontSize: Typography.lg,
-    fontWeight: Typography.medium,
+    fontFamily: Fonts.manrope.bold,
   },
 
   title: {
     fontSize: Typography.xl,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.bold,
     marginBottom: 10,
     color: Colors.navy,
   },
@@ -282,9 +282,10 @@ const styles = StyleSheet.create({
   },
 
   segText: { textTransform: "capitalize" },
-  segmentText: { color: "#666" },
+  segmentText: { color: "#666", fontFamily: Fonts.inter.regular },
   activeSegmentText: {
     color: Colors.navy,
+    fontFamily: Fonts.inter.bold,
   },
 
   toggleRow: {
@@ -313,12 +314,13 @@ const styles = StyleSheet.create({
   },
 
   alertTitle: {
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.semibold,
     color: Colors.navy,
   },
 
   alertSub: {
     fontSize: 10,
+    fontFamily: Fonts.inter.semibold,
     color: Colors.textPrimary,
     marginTop: 4,
   },

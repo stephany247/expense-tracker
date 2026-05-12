@@ -1,7 +1,14 @@
-import { Colors, Spacing, Typography } from "@/constants/theme";
+import { Colors, Fonts, Spacing, Typography } from "@/constants/theme";
 import { useAppStore } from "@/utils/storage";
 import { useRouter } from "expo-router";
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { AllocationCard } from "./AllocationCard";
 import { normalizeCat } from "@/utils/format";
 
@@ -62,13 +69,13 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: Typography.lg,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.textBlack,
   },
 
   link: {
     fontSize: Typography.sm,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.bold,
     color: Colors.navy,
   },
 });

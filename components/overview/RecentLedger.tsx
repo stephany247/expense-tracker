@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Spacing, Typography } from "@/constants/theme";
 import { defaultCategories } from "@/constants/categories";
 import { ComponentProps } from "react";
 import { Transaction } from "@/utils/storage";
@@ -76,13 +76,13 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     fontSize: Typography.lg,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.textBlack,
   },
 
   link: {
     fontSize: Typography.sm,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.bold,
     color: Colors.navy,
   },
 

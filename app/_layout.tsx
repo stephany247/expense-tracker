@@ -1,5 +1,5 @@
 import "react-native-worklets-core";
-import { Colors } from "@/constants/theme";
+import { Colors, Fonts } from "@/constants/theme";
 import { useAppStore } from "@/utils/storage";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -48,7 +48,7 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
 
       <Stack
         screenOptions={{
@@ -58,6 +58,8 @@ export default function RootLayout() {
           },
           headerTitleStyle: {
             color: Colors.navy,
+            fontFamily: Fonts.inter.bold,
+            fontSize: 18,
           },
           headerTintColor: Colors.navy,
         }}

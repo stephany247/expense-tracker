@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Colors, Typography } from "@/constants/theme";
+import { Colors, Fonts, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -56,7 +56,7 @@ export const DateInput = ({
 const styles = StyleSheet.create({
   label: {
     fontSize: 12,
-    fontWeight: Typography.semibold,
+    fontFamily: Fonts.inter.semibold,
     color: Colors.textSecondary,
     marginBottom: 5,
     marginTop: 18,
@@ -67,5 +67,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
     paddingHorizontal: 10,
+    fontFamily: Fonts.manrope.bold,
   },
 });

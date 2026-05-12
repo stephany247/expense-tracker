@@ -1,49 +1,30 @@
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
-import {
-  useCallback,
-  useState,
-} from "react";
+import { useCallback, useState } from "react";
 
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ComponentProps } from "react";
 
 import { CategoryItem } from "./CategoryItem";
 
-import {
-  Category,
-  useAppStore,
-} from "@/utils/storage";
+import { Category, useAppStore } from "@/utils/storage";
 
-type IconName =
-  ComponentProps<
-    typeof Ionicons
-  >["name"];
+type IconName = ComponentProps<typeof Ionicons>["name"];
 
 export const CategoryScroll = () => {
   const router = useRouter();
 
   const { categories } = useAppStore();
 
-  const [
-    selectedCategory,
-    setSelectedCategory,
-  ] = useState<Category | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  );
 
   useFocusEffect(
     useCallback(() => {
-      if (
-        categories.length > 0 &&
-        !selectedCategory
-      ) {
+      if (categories.length > 0 && !selectedCategory) {
         setSelectedCategory(categories[0]);
       }
     }, [categories, selectedCategory]),
@@ -51,46 +32,34 @@ export const CategoryScroll = () => {
 
   return (
     <View style={styles.scrollContainer}>
-      <Text style={styles.header}>
-        CATEGORY
-      </Text>
+      <Text style={styles.header}>CATEGORY</Text>
 
       <FlatList
         horizontal
         data={categories}
-        keyExtractor={(item) =>
-          item.id.toString()
-        }
-        showsHorizontalScrollIndicator={
-          false
-        }
+        keyExtractor={(item) => item.id.toString()}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           paddingRight: 10,
         }}
         renderItem={({ item }) => {
-          const isActive =
-            selectedCategory?.id === item.id;
+          const isActive = selectedCategory?.id === item.id;
 
           return (
             <CategoryItem
               name={item.name}
-              icon={
-                item.icon as IconName
-              }
+              icon={item.icon as IconName}
               isActive={isActive}
               onPress={() => {
                 setSelectedCategory(item);
 
                 router.push({
-                  pathname:
-                    "/add-transaction",
+                  pathname: "/add-transaction",
 
                   params: {
-                    categoryId:
-                      item.id.toString(),
+                    categoryId: item.id.toString(),
 
-                    categoryName:
-                      item.name,
+                    categoryName: item.name,
                   },
                 });
               }}
@@ -100,21 +69,11 @@ export const CategoryScroll = () => {
         ListFooterComponent={
           <Pressable
             style={styles.newCat}
-            onPress={() =>
-              router.push(
-                "/add-category",
-              )
-            }
+            onPress={() => router.push("/add-category")}
           >
-            <Ionicons
-              name="add"
-              size={28}
-              color={Colors.textBlack}
-            />
+            <Ionicons name="add" size={28} color={Colors.textBlack} />
 
-            <Text style={styles.newText}>
-              New
-            </Text>
+            <Text style={styles.newText}>New</Text>
           </Pressable>
         }
       />
@@ -131,7 +90,7 @@ const styles = StyleSheet.create({
 
   header: {
     fontSize: Typography.sm,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.bold,
     color: Colors.textPrimary,
     marginBottom: 16,
   },

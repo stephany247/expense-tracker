@@ -1,4 +1,4 @@
-import { Colors, Radii, Spacing, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Spacing, Typography } from "@/constants/theme";
 import { formatCurrency } from "@/utils/format";
 import { useAppStore } from "@/utils/storage";
 import React from "react";
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
 
   small: {
     fontSize: Typography.xs,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.bold,
     color: Colors.textWhite,
   },
 
@@ -81,12 +81,13 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: Typography["5xl"],
     color: Colors.textWhite,
-    fontWeight: Typography.extrabold,
+    fontFamily: Fonts.manrope.extrabold,
     marginTop: 12,
   },
 
   sub: {
     color: Colors.textTertiary,
+    fontFamily: Fonts.inter.regular,
     fontStyle: "italic",
     marginTop: 2,
     marginBottom: 12,

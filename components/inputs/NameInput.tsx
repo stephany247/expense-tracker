@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 
 type Props = {
   value: string;
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    fontWeight: Typography.semibold,
+    fontFamily: Fonts.inter.bold,
     color: Colors.textSecondary,
     marginBottom: 5,
   },
@@ -47,5 +47,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     padding: 12,
+    fontFamily: Fonts.inter.medium,
   },
 });

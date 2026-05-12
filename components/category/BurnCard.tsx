@@ -1,4 +1,4 @@
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { formatCurrency } from "@/utils/format";
 import { useAppStore } from "@/utils/storage";
 import { StyleSheet, Text, View } from "react-native";
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   bigAmount: {
     fontSize: Typography["5xl"],
     color: Colors.textWhite,
-    fontWeight: Typography.extrabold,
+        fontFamily: Fonts.manrope.extrabold,
     marginBottom: 12,
   },
 
@@ -126,11 +126,13 @@ const styles = StyleSheet.create({
 
   sub: {
     fontSize: 12,
+    fontFamily: Fonts.inter.medium,
     color: Colors.textTertiary,
   },
 
   small: {
     color: Colors.textTertiary,
+    fontFamily: Fonts.inter.semibold,
     fontSize: Typography.sm,
   },
 

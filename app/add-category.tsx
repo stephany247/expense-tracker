@@ -1,5 +1,5 @@
 import { NotesInput } from "@/components/inputs/NotesInput";
-import { Colors, Typography } from "@/constants/theme";
+import { Colors, Fonts, Typography } from "@/constants/theme";
 import { useAppStore } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -57,6 +57,7 @@ function AddCategory() {
             <Ionicons name="person-outline" size={18} color="#8A94A6" />
             <TextInput
               placeholder="John Doe"
+              placeholderTextColor={Colors.gray500}
               value={name}
               onChangeText={setName}
               style={styles.input}
@@ -67,7 +68,9 @@ function AddCategory() {
         </View>
         <View style={styles.card}>
           <View style={styles.currencyBadge}>
-            <Text style={{ color: "#fff" }}>USD</Text>
+            <Text style={{ color: "#fff", fontFamily: Fonts.inter.bold }}>
+              USD
+            </Text>
           </View>
 
           <Text style={styles.label}>CATEGORY BUDGET</Text>
@@ -76,6 +79,7 @@ function AddCategory() {
             <Text style={styles.dollar}>$</Text>
             <TextInput
               placeholder="0.00"
+              placeholderTextColor={Colors.navy}
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 12,
-    fontWeight: "600",
+    fontFamily: Fonts.inter.bold,
     color: "#8A94A6",
     marginBottom: 8,
   },
@@ -126,6 +130,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     padding: 12,
+    fontFamily: Fonts.inter.medium,
   },
 
   notesBox: {
@@ -147,9 +152,9 @@ const styles = StyleSheet.create({
   dollar: {
     position: "absolute",
     left: 4,
-    bottom: 12,
+    bottom: 24,
     fontSize: Typography["6xl"],
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.extrabold,
     color: Colors.textTertiary,
   },
   amountInput: {
@@ -157,7 +162,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 60,
     fontSize: 72,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.extrabold,
     color: Colors.navy,
   },
 
@@ -182,6 +187,6 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: "#fff",
-    fontWeight: "600",
+    fontFamily: Fonts.manrope.bold,
   },
 });

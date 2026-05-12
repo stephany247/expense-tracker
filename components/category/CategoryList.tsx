@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, Pressable } from "react-native";
 
 import { useRouter } from "expo-router";
 
-import { Colors, Typography } from "@/constants/theme";
+import { Colors, Fonts, Typography } from "@/constants/theme";
 
 import { useAppStore } from "@/utils/storage";
 
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontWeight: "600",
+    fontFamily: Fonts.manrope.bold,
     fontSize: Typography.lg,
     color: Colors.textBlack,
   },
@@ -88,6 +88,6 @@ const styles = StyleSheet.create({
   link: {
     color: Colors.navy,
     fontSize: Typography.xs,
-    fontWeight: "700",
+    fontFamily: Fonts.inter.bold,
   },
 });

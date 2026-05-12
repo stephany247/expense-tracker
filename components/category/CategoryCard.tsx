@@ -3,7 +3,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 
 import { formatCurrency } from "@/utils/format";
 import { Ionicons } from "@expo/vector-icons";
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
 
   categoryName: {
     fontSize: Typography.base,
-    fontWeight: Typography.semibold,
+    fontFamily: Fonts.manrope.bold,
     color: Colors.textBlack,
   },
 
@@ -104,13 +104,13 @@ const styles = StyleSheet.create({
   },
 
   amount: {
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.bold,
     fontSize: Typography.xl,
     color: Colors.navy,
   },
 
   leftText: {
-    fontWeight: Typography.semibold,
+    fontFamily: Fonts.inter.bold,
     fontSize: Typography.base,
   },
 });

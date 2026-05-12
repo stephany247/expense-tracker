@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Typography } from "@/constants/theme";
+import { Colors, Fonts, Typography } from "@/constants/theme";
 import { AllocationItem, IconName } from "./AllocationCard";
 
 type Props = {
@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
 
   badgeText: {
     fontSize: 10,
-    fontWeight: "600",
+    fontFamily: Fonts.inter.bold,
   },
 
   title: {
     fontSize: Typography["2xl"],
-    fontWeight: "600",
+    fontFamily: Fonts.manrope.bold,
     marginTop: 10,
   },
 
@@ -115,13 +115,13 @@ const styles = StyleSheet.create({
 
   amount: {
     fontSize: Typography["4xl"],
-    fontWeight: "700",
+    fontFamily: Fonts.inter.bold,
     marginTop: 4,
   },
 
   gray: {
     color: Colors.textPrimary,
-    fontWeight: "300",
+    fontFamily: Fonts.inter.regular,
   },
 
   progressBg: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   usageText: {
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.inter.bold,
     fontSize: Typography.sm,
   },
 });

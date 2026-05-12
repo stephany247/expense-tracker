@@ -1,4 +1,4 @@
-import { Colors, Radii } from "@/constants/theme";
+import { Colors, Fonts, Radii } from "@/constants/theme";
 import { Transaction } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
@@ -71,12 +71,13 @@ const styles = StyleSheet.create({
 
   itemTitle: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: Fonts.inter.bold,
     color: Colors.textBlack,
   },
 
   subtitle: {
-    fontSize: 11,
+    fontSize: 10,
+    fontFamily: Fonts.inter.regular,
     color: Colors.textPrimary,
     marginTop: 4,
     textTransform: "uppercase",
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
 
   amount: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: Fonts.manrope.bold,
   },
 
   expense: {

@@ -1,7 +1,7 @@
 // components/CategoryItem.tsx
 import { Pressable, Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, Typography } from "@/constants/theme";
+import { Colors, Fonts, Typography } from "@/constants/theme";
 import { ComponentProps } from "react";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
@@ -39,7 +39,11 @@ export const CategoryItem = ({
       <Text
         style={[
           styles.catText,
-          isActive && { color: Colors.navy, fontWeight: "600" },
+
+          isActive && {
+            color: Colors.navy,
+            fontFamily: Fonts.inter.bold,
+          },
         ]}
       >
         {name}
@@ -76,5 +80,6 @@ const styles = StyleSheet.create({
 
   catText: {
     color: Colors.textBlack,
+    fontFamily: Fonts.inter.medium,
   },
 });
