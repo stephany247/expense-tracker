@@ -18,57 +18,61 @@ export default function RootLayout() {
     <>
       <StatusBar style="auto" />
 
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerBackButtonDisplayMode: "minimal",
+          headerStyle: {
+            backgroundColor: Colors.blueGhost,
+          },
+          headerTitleStyle: {
+            color: Colors.navy,
+          },
+          headerTintColor: Colors.navy,
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+
         <Stack.Screen
           name="add-transaction"
           options={{
             title: "Add Transaction",
-            headerBackButtonDisplayMode: "minimal",
-            headerStyle: {
-              backgroundColor: Colors.blueGhost,
-            },
           }}
         />
+
         <Stack.Screen
           name="add-category"
           options={{
             title: "New Category",
-            headerBackButtonDisplayMode: "minimal",
-            headerStyle: {
-              backgroundColor: Colors.blueGhost,
-            },
           }}
         />
+
         <Stack.Screen
           name="allocation-form"
           options={{
             title: "Allocation",
-            headerBackButtonDisplayMode: "minimal",
-            headerStyle: {
-              backgroundColor: Colors.blueGhost,
-            },
           }}
         />
+
         <Stack.Screen
           name="all-allocations"
           options={{
             title: "Allocation",
-            headerBackButtonDisplayMode: "minimal",
-            headerStyle: {
-              backgroundColor: Colors.blueGhost,
-            },
           }}
         />
+
         <Stack.Screen
           name="recent-ledgers"
           options={{
             title: "Recent Ledgers",
-            headerBackButtonDisplayMode: "minimal",
-            headerStyle: {
-              backgroundColor: Colors.blueGhost,
-            },
+          }}
+        />
+
+        <Stack.Screen
+          name="all-categories"
+          options={{
+            title: "Categories",
           }}
         />
       </Stack>
