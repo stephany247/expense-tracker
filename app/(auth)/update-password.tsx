@@ -56,13 +56,17 @@ export default function UpdatePasswordScreen() {
 
     updatePassword(newPassword);
 
-    Alert.alert("Password Updated", "Your password was updated successfully.");
+    Alert.alert("Password Updated", "Your password was updated successfully.", [
+      {
+        text: "OK",
+        onPress: () => router.back(),
+      },
+    ]);
   };
 
   const passwordStrength = getPasswordStrength(newPassword);
 
   return (
-    // <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -244,7 +248,6 @@ export default function UpdatePasswordScreen() {
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
-    // </SafeAreaView>
   );
 }
 
@@ -316,7 +319,7 @@ const styles = StyleSheet.create({
     padding: 18,
     borderTopWidth: 4,
     borderTopColor: "#1457D9",
-    marginBottom: 48
+    marginBottom: 48,
   },
 
   divider: {
