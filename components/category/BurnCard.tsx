@@ -1,25 +1,93 @@
 import { Colors, Radii, Typography } from "@/constants/theme";
+import { formatCurrency } from "@/utils/format";
+import { useAppStore } from "@/utils/storage";
 import { StyleSheet, Text, View } from "react-native";
 
-export const BurnCard = () => (
-  <View style={styles.burnCard}>
-    <View style={styles.rowBetween}>
-      <Text style={styles.small}>MONTHLY BURN</Text>
-      <Text style={styles.badge}>ON TRACK</Text>
-    </View>
+export const BurnCard = () => {
+  const { transactions, allocations } = useAppStore();
 
-    <Text style={styles.bigAmount}>$4,280.00</Text>
+  const monthlyExpenses = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-    <View style={styles.progressBar}>
-      <View style={[styles.progressFill, { width: "62%" }]} />
-    </View>
+  const allocationLimit = allocations.reduce(
+    (sum, a) => sum + a.amount,
+    0,
+  );
 
-    <View style={styles.rowBetween}>
-      <Text style={styles.sub}>62% of $6,850 limit</Text>
-      <Text style={styles.sub}>$2,570 left</Text>
+  const progress = allocationLimit
+    ? Math.min(
+        (monthlyExpenses / allocationLimit) * 100,
+        100,
+      )
+    : 0;
+
+  const remaining = Math.max(
+    allocationLimit - monthlyExpenses,
+    0,
+  );
+
+  const status =
+    progress < 70
+      ? "ON TRACK"
+      : progress < 90
+        ? "CAUTION"
+        : "HIGH";
+
+  const statusColor =
+    progress < 70
+      ? Colors.success
+      : progress < 90
+        ? "#F59E0B"
+        : Colors.danger;
+
+  return (
+    <View style={styles.burnCard}>
+      <View style={styles.rowBetween}>
+        <Text style={styles.small}>
+          MONTHLY BURN
+        </Text>
+
+        <Text
+          style={[
+            styles.badge,
+            {
+              backgroundColor: statusColor,
+            },
+          ]}
+        >
+          {status}
+        </Text>
+      </View>
+
+      <Text style={styles.bigAmount}>
+        {formatCurrency(monthlyExpenses)}
+      </Text>
+
+      <View style={styles.progressBar}>
+        <View
+          style={[
+            styles.progressFill,
+            {
+              width: `${progress}%`,
+            },
+          ]}
+        />
+      </View>
+
+      <View style={styles.rowBetween}>
+        <Text style={styles.sub}>
+          {progress.toFixed(0)}% of{" "}
+          {formatCurrency(allocationLimit)} limit
+        </Text>
+
+        <Text style={styles.sub}>
+          {formatCurrency(remaining)} left
+        </Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   burnCard: {
@@ -41,7 +109,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.3)",
     borderRadius: 10,
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   progressFill: {
@@ -67,11 +135,11 @@ const styles = StyleSheet.create({
   },
 
   badge: {
-    backgroundColor: Colors.success,
     color: Colors.textWhite,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: Radii.full,
     fontSize: Typography.xs,
+    overflow: "hidden",
   },
 });

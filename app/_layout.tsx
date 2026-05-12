@@ -51,7 +51,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="allocation-form"
           options={{
-            title: "Allocation",
+            title: "New Allocation",
           }}
         />
 

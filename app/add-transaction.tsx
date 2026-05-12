@@ -132,7 +132,6 @@ export default function AddTransaction() {
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Category"
-                  placeholderTextColor={Colors.gray500}
                   value={category}
                   editable={false}
                   style={styles.input}
@@ -396,7 +395,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
-    marginBottom: 40,
+    marginBottom: 60,
     marginTop: 80,
   },
 
