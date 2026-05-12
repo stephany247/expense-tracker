@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,120 +6,252 @@ import {
   View,
   Pressable,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuthStore } from "@/utils/auth-store";
-import { Colors } from "@/constants/theme";
+import { Colors, Typography } from "@/constants/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/Button";
+import { getPasswordStrength } from "@/utils/format";
+import { router } from "expo-router";
 
 export default function UpdatePasswordScreen() {
-  const user = useAuthStore((s) => s.user);
-  const updatePassword = useAuthStore(
-    (s) => s.updatePassword,
-  );
+  const { user, updatePassword } = useAuthStore();
 
-  const [currentPassword, setCurrentPassword] =
-    useState("");
-
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleUpdate = () => {
+    if (!currentPassword.trim()) {
+      Alert.alert("Missing Password", "Please enter your current password.");
+      return;
+    }
+
     if (currentPassword !== user?.password) {
-      Alert.alert("Error", "Current password is wrong");
+      Alert.alert("Invalid Password", "Current password is incorrect.");
+      return;
+    }
+
+    if (!newPassword.trim()) {
+      Alert.alert("Missing Password", "Please enter a new password.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      Alert.alert("Weak Password", "Password must be at least 6 characters.");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert("Password Mismatch", "Passwords do not match.");
       return;
     }
 
     updatePassword(newPassword);
 
-    Alert.alert("Success", "Password updated");
+    Alert.alert("Password Updated", "Your password was updated successfully.");
   };
 
+  const passwordStrength = getPasswordStrength(newPassword);
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+    // <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={20}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: 40,
+          padding: 24,
+          marginTop: 20,
+        }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.iconCircle}>
-          <Ionicons
-            name="lock-closed-outline"
-            size={34}
-            color={Colors.navy}
-          />
+          <Ionicons name="lock-closed-sharp" size={34} color={Colors.navy} />
         </View>
 
         <Text style={styles.title}>Change Password</Text>
 
         <Text style={styles.subtitle}>
-          Update your credentials to maintain account
-          security.
+          Update your credentials to maintain strict account security and data
+          protection.
         </Text>
 
         <View style={styles.card}>
-          <Text style={styles.label}>
-            Current Password
-          </Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Current Password</Text>
 
-          <TextInput
-            placeholder="Enter current password"
-            secureTextEntry
-            value={currentPassword}
-            onChangeText={setCurrentPassword}
-            style={styles.input}
-          />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Enter current password"
+                secureTextEntry={!showCurrentPassword}
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+
+              <Pressable
+                onPress={() => setShowCurrentPassword((prev) => !prev)}
+              >
+                <Ionicons
+                  name={showCurrentPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color={Colors.textPrimary}
+                />
+              </Pressable>
+            </View>
+          </View>
 
           <View style={styles.divider} />
 
-          <Text style={styles.label}>New Password</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>New Password</Text>
 
-          <TextInput
-            placeholder="Enter new password"
-            secureTextEntry
-            value={newPassword}
-            onChangeText={setNewPassword}
-            style={styles.input}
-          />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Enter new password"
+                secureTextEntry={!showNewPassword}
+                value={newPassword}
+                onChangeText={setNewPassword}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
 
-          <Text style={styles.label}>
-            Confirm New Password
-          </Text>
+              <Pressable onPress={() => setShowNewPassword((prev) => !prev)}>
+                <Ionicons
+                  name={showNewPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color={Colors.textPrimary}
+                />
+              </Pressable>
+            </View>
 
-          <TextInput
-            placeholder="Confirm new password"
-            secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            style={styles.input}
-          />
+            {/* strength bar */}
+            <View style={styles.strengthWrapper}>
+              <View style={styles.strengthTrack}>
+                <View
+                  style={[
+                    styles.strengthFill,
+                    {
+                      width: passwordStrength.width,
+                      backgroundColor: passwordStrength.color,
+                    },
+                  ]}
+                />
+              </View>
 
-          <Pressable
-            style={styles.button}
-            onPress={handleUpdate}
-          >
-            <Text style={styles.buttonText}>
-              Update Password
-            </Text>
+              <Text style={styles.strengthText}>
+                Strength:{" "}
+                <Text
+                  style={{
+                    color: passwordStrength.color,
+                    fontWeight: "700",
+                  }}
+                >
+                  {passwordStrength.label}
+                </Text>
+              </Text>
+            </View>
+
+            {/* requirements */}
+            <View style={styles.requirementCard}>
+              <Text style={styles.requirementTitle}>SECURITY REQUIREMENTS</Text>
+
+              <View style={styles.requirementItem}>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={18}
+                  color="#1457D9"
+                />
+
+                <Text style={styles.requirementText}>
+                  At least 8 characters long
+                </Text>
+              </View>
+
+              <View style={styles.requirementItem}>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={18}
+                  color="#1457D9"
+                />
+
+                <Text style={styles.requirementText}>
+                  Contains uppercase & lowercase
+                </Text>
+              </View>
+
+              <View style={styles.requirementItem}>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={18}
+                  color="#1457D9"
+                />
+
+                <Text style={styles.requirementText}>
+                  Contains numbers or symbols
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Confirm New Password</Text>
+
+            <View style={styles.inputWrapper}>
+              <TextInput
+                placeholder="Confirm new password"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                style={styles.input}
+                placeholderTextColor={Colors.textTertiary}
+                cursorColor={Colors.navy}
+              />
+
+              <Pressable
+                onPress={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                <Ionicons
+                  name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+                  size={22}
+                  color={Colors.textPrimary}
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          <Button title="Update Password" onPress={handleUpdate} icon={false} />
+
+          <Pressable style={styles.cancelBtn} onPress={() => router.back()}>
+            <Text style={styles.cancelText}>Cancel</Text>
           </Pressable>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
+    // </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6F7FB",
-  },
-
-  content: {
-    padding: 24,
-    marginTop: 40,
+    backgroundColor: "#F8F9FF",
   },
 
   iconCircle: {
@@ -135,63 +266,127 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 42,
-    fontWeight: "700",
+    fontSize: Typography["5xl"],
+    fontWeight: Typography.bold,
     textAlign: "center",
-    color: "#0F172A",
-    marginBottom: 12,
+    color: Colors.textBlack,
+    marginBottom: 10,
   },
 
   subtitle: {
+    fontSize: Typography.lg,
     textAlign: "center",
+    color: Colors.textPrimary,
+    marginBottom: 50,
+    maxWidth: "90%",
+    marginHorizontal: "auto",
+  },
+
+  inputGroup: {
+    marginBottom: 24,
+  },
+
+  label: {
+    fontSize: Typography.base,
+    fontWeight: Typography.semibold,
+    marginBottom: 6,
+    color: Colors.gray800,
+  },
+
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F2F4F7",
+    borderWidth: 1,
+    borderColor: "#D0D5DD",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+
+  input: {
+    flex: 1,
     fontSize: 18,
-    lineHeight: 28,
-    color: "#555",
-    marginBottom: 34,
+    color: Colors.textBlack,
   },
 
   card: {
     backgroundColor: "#fff",
     borderRadius: 24,
-    padding: 20,
-  },
-
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 10,
-    color: "#111827",
-  },
-
-  input: {
-    height: 58,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    paddingHorizontal: 16,
-    backgroundColor: "#F9FAFB",
-    marginBottom: 22,
-    fontSize: 16,
+    padding: 18,
+    borderTopWidth: 4,
+    borderTopColor: "#1457D9",
+    marginBottom: 48
   },
 
   divider: {
     height: 1,
     backgroundColor: "#EAECF0",
-    marginBottom: 22,
+    marginBottom: 16,
   },
 
-  button: {
-    height: 58,
-    backgroundColor: "#1457D9",
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
+  strengthWrapper: {
     marginTop: 10,
   },
 
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
+  strengthTrack: {
+    height: 6,
+    backgroundColor: "#DCE3F0",
+    borderRadius: 100,
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+
+  strengthFill: {
+    height: "100%",
+    borderRadius: 100,
+  },
+
+  strengthText: {
+    fontSize: 14,
+    color: Colors.textPrimary,
+  },
+
+  requirementCard: {
+    backgroundColor: Colors.blueLight,
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 18,
+  },
+
+  requirementTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#1F2937",
+    marginBottom: 14,
+    letterSpacing: 1,
+  },
+
+  requirementItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 10,
+  },
+
+  requirementText: {
+    fontSize: 15,
+    color: Colors.textPrimary,
+    flex: 1,
+  },
+
+  cancelBtn: {
+    marginTop: 10,
+    padding: 14,
+    borderRadius: 16,
+    backgroundColor: Colors.blueLight,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  cancelText: {
+    color: "#1457D9",
+    fontSize: 17,
     fontWeight: "700",
   },
 });

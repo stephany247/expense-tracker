@@ -20,3 +20,47 @@ export const formatCurrency = (value: number) =>
     style: "currency",
     currency: "USD",
   }).format(value);
+
+export const getPasswordStrength = (
+  password: string,
+): {
+  label: string;
+  width: `${number}%`;
+  color: string;
+} => {
+  let score = 0;
+
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9!@#$%^&*]/.test(password)) score++;
+
+  if (score === 1) {
+    return {
+      label: "Weak",
+      width: "33%",
+      color: "#F04438",
+    };
+  }
+
+  if (score === 2) {
+    return {
+      label: "Medium",
+      width: "66%",
+      color: "#F79009",
+    };
+  }
+
+  if (score === 3) {
+    return {
+      label: "Strong",
+      width: "100%",
+      color: "#1457D9",
+    };
+  }
+
+  return {
+    label: "Weak",
+    width: "10%",
+    color: "#D0D5DD",
+  };
+};
