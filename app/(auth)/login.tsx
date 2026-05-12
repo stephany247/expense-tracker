@@ -19,7 +19,7 @@ import { Button } from "@/components/Button";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const login = useAuthStore((s) => s.login);
+  const { login, biometricVerification } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +33,11 @@ export default function LoginScreen() {
       return;
     }
 
-    router.push("/(auth)/identity-verification");
+    if (biometricVerification) {
+      router.push("/(auth)/identity-verification");
+    } else {
+      router.replace("/(tabs)");
+    }
   };
 
   return (

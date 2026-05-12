@@ -6,20 +6,41 @@ import {
   Switch,
   ScrollView,
   Image,
+  Alert,
 } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors, Spacing, Typography, Radii } from "@/constants/theme";
-import { useState } from "react";
 import { router } from "expo-router";
 import { useAuthStore } from "@/utils/auth-store";
 
 export default function SettingsScreen() {
-  const [isBiometricEnabled, setIsBiometricEnabled] = useState(true);
-  const { user } = useAuthStore();
+  const { user, biometricVerification, setBiometricVerification } =
+    useAuthStore();
 
   const passwordDate = user?.passwordUpdatedAt
     ? new Date(user.passwordUpdatedAt).toLocaleDateString()
     : "Unknown";
+
+  const handleToggleBiometrics = () => {
+    Alert.alert(
+      biometricVerification ? "Disable Verification?" : "Enable Verification?",
+
+      biometricVerification
+        ? "You will no longer be asked to verify your identity during login."
+        : "Identity verification will be required whenever you log in.",
+
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          onPress: () => setBiometricVerification(!biometricVerification),
+        },
+      ],
+    );
+  };
 
   return (
     <View style={styles.safeArea}>
@@ -122,8 +143,8 @@ export default function SettingsScreen() {
             </View>
 
             <Switch
-              value={isBiometricEnabled}
-              onValueChange={setIsBiometricEnabled}
+              value={biometricVerification}
+              onValueChange={handleToggleBiometrics}
               trackColor={{
                 false: "#D0D5DD",
                 true: "#53D89C",

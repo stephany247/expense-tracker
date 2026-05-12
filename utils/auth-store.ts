@@ -17,6 +17,9 @@ type AuthStore = {
   login: (email: string, password: string) => boolean;
   logout: () => void;
   updatePassword: (password: string) => void;
+
+  biometricVerification: boolean;
+  setBiometricVerification: (value: boolean) => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -60,6 +63,12 @@ export const useAuthStore = create<AuthStore>()(
               }
             : null,
         })),
+
+      biometricVerification: true,
+      setBiometricVerification: (value) =>
+        set({
+          biometricVerification: value,
+        }),
     }),
     {
       name: "auth-storage",
@@ -67,6 +76,7 @@ export const useAuthStore = create<AuthStore>()(
 
       partialize: (state) => ({
         user: state.user,
+        biometricVerification: state.biometricVerification,
       }),
     },
   ),
