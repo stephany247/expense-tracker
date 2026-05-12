@@ -1,37 +1,71 @@
-import { View, StyleSheet, Text} from "react-native";
+import React from "react";
+import { View, StyleSheet, Text, Pressable } from "react-native";
+
+import { useRouter } from "expo-router";
+
+import { Colors, Typography } from "@/constants/theme";
+
+import { useAppStore } from "@/utils/storage";
+
+import { normalizeCat } from "@/utils/format";
+import { CategoryCard } from "./CategoryCard";
 
 export const CategoryList = () => {
-  const data = [
-    { name: "Utilities", amount: 150, left: 100, color: "#E53935" },
-    { name: "Health & Fitness", amount: 120, left: 30, color: "#1A3A8F" },
-    { name: "Clothing", amount: 180, left: 60, color: "#1A3A8F" },
-  ];
+  const router = useRouter();
+
+  const { categories, allocations, transactions } = useAppStore();
+
+  const data = categories
+    .map((cat) => {
+      const allocation = allocations.find(
+        (a) => normalizeCat(a.category) === normalizeCat(cat.name),
+      );
+
+      const allocated = allocation?.amount || 0;
+
+      const spent = transactions
+        .filter(
+          (t) =>
+            normalizeCat(t.category) === normalizeCat(cat.name) &&
+            t.type === "expense",
+        )
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const remaining = Math.max(allocated - spent, 0);
+
+      const progress = allocated ? Math.min((spent / allocated) * 100, 100) : 0;
+
+      const progressColor =
+        progress >= 90
+          ? Colors.danger
+          : progress >= 70
+            ? "#F59E0B"
+            : Colors.navy;
+
+      return {
+        ...cat,
+        allocated,
+        spent,
+        remaining,
+        progress,
+        progressColor,
+      };
+    })
+    .sort((a, b) => b.spent - a.spent)
+    .slice(0, 8);
 
   return (
     <View>
       <View style={styles.rowBetween}>
         <Text style={styles.sectionTitle}>Categories</Text>
-        <Text style={styles.link}>VIEW ALL</Text>
+
+        <Pressable onPress={() => router.push("/all-categories")}>
+          <Text style={styles.link}>VIEW ALL</Text>
+        </Pressable>
       </View>
 
-      {data.map((item, i) => (
-        <View key={i} style={styles.categoryCard}>
-          <Text>{item.name}</Text>
-
-          <View style={styles.progressBarLight}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: "70%", backgroundColor: item.color },
-              ]}
-            />
-          </View>
-
-          <View style={styles.rowBetween}>
-            <Text style={styles.amount}>${item.amount}</Text>
-            <Text style={{ color: item.color }}>${item.left} LEFT</Text>
-          </View>
-        </View>
+      {data.map((item) => (
+        <CategoryCard key={item.id} item={item} />
       ))}
     </View>
   );
@@ -42,39 +76,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 16,
   },
 
   sectionTitle: {
     fontWeight: "600",
-    fontSize: 16,
-  },
-
-  categoryCard: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
-  },
-
-  progressBarLight: {
-    height: 6,
-    backgroundColor: "#eee",
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-
-  progressFill: {
-    height: "100%",
-    backgroundColor: "#fff",
-    borderRadius: 10,
+    fontSize: Typography.lg,
+    color: Colors.textBlack,
   },
 
   link: {
-    color: "#1A3A8F",
-    fontSize: 12,
-  },
-
-  amount: {
-    fontWeight: "600",
+    color: Colors.navy,
+    fontSize: Typography.xs,
+    fontWeight: "700",
   },
 });
