@@ -17,6 +17,7 @@ export const AmountInput = ({ value, onChange, onBlur }: Props) => {
 
         <TextInput
           placeholder="0.00"
+          placeholderTextColor={Colors.navy}
           value={value}
           onChangeText={onChange}
           onBlur={onBlur}

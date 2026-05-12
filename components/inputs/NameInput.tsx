@@ -17,6 +17,7 @@ export const NameInput = ({ value, onChange }: Props) => {
 
         <TextInput
           placeholder="John Doe"
+          placeholderTextColor={Colors.gray500}
           value={value}
           onChangeText={onChange}
           style={styles.input}

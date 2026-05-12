@@ -132,6 +132,7 @@ export default function AddTransaction() {
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Category"
+                  placeholderTextColor={Colors.gray500}
                   value={category}
                   editable={false}
                   style={styles.input}
@@ -325,7 +326,6 @@ const styles = StyleSheet.create({
   dropdown: {
     borderRadius: 10,
     paddingVertical: 5,
-    elevation: 3,
   },
 
   dropdownItem: {

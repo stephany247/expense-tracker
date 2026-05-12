@@ -12,6 +12,7 @@ export const NotesInput = ({ value, onChange }: Props) => {
       <Text style={[styles.label, { paddingLeft: 8 }]}>NOTES</Text>
       <TextInput
         placeholder="What was this for?"
+        placeholderTextColor={Colors.gray500}
         value={value}
         onChangeText={onChange}
         style={[styles.input, { height: 100 }]}
