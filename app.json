@@ -48,13 +48,20 @@
           "cameraPermissionText": "We need camera access for identity verification."
         }
       ],
-      // ["react-native-worklets-core/plugin"],
       [
         "expo-build-properties",
         {
           "android": {
             "minSdkVersion": 26
           }
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"
+          ]
         }
       ]
     ],

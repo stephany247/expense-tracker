@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 
   progressBarLight: {
     height: 6,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.gray300,
     borderRadius: Radii.full,
     marginVertical: 10,
     overflow: "hidden",
@@ -104,12 +104,13 @@ const styles = StyleSheet.create({
   },
 
   amount: {
-    fontWeight: Typography.semibold,
-    color: Colors.textBlack,
+    fontWeight: Typography.bold,
+    fontSize: Typography.xl,
+    color: Colors.navy,
   },
 
   leftText: {
     fontWeight: Typography.semibold,
-    fontSize: Typography.sm,
+    fontSize: Typography.base,
   },
 });

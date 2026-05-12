@@ -127,3 +127,20 @@ export const Shadows = {
     elevation: 3,
   },
 };
+
+export const Fonts = {
+  inter: {
+    regular: "Inter_400Regular",
+    medium: "Inter_500Medium",
+    semibold: "Inter_600SemiBold",
+    bold: "Inter_700Bold",
+  },
+
+  manrope: {
+    regular: "Manrope_400Regular",
+    medium: "Manrope_500Medium",
+    semibold: "Manrope_600SemiBold",
+    bold: "Manrope_700Bold",
+    extrabold: "Manrope_800ExtraBold",
+  },
+};

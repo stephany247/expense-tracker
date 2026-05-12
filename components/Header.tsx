@@ -1,4 +1,4 @@
-import { Colors, Radii, Typography } from "@/constants/theme";
+import { Colors, Fonts, Radii, Typography } from "@/constants/theme";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: Typography.xl,
-    fontWeight: Typography.bold,
+    fontFamily: Fonts.manrope.extrabold,
     color: Colors.navy,
   },
   headerIcon: {
